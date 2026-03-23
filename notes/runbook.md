@@ -15,7 +15,7 @@ Run one minimal Anemoi training job end to end on a controlled single-node setup
 ## Validate The Runtime And Smoke Test
 
 ```bash
-sbatch jobs/validate_minimal.slurm
+sbatch jobs/validate_minimal.sh
 ```
 
 Expected result:
@@ -39,7 +39,7 @@ The path roots come from [env/lumi-env.sh](/Users/anisrahm/Documents/anemoi-demo
 ## Full Minimal Run
 
 ```bash
-sbatch jobs/train_minimal.slurm
+sbatch jobs/train_minimal.sh
 ```
 
 Success means:

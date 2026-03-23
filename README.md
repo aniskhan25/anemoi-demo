@@ -24,8 +24,8 @@ anemoi-demo/
     install.sh
     lumi-env.sh
   jobs/
-    validate_minimal.slurm
-    train_minimal.slurm
+    validate_minimal.sh
+    train_minimal.sh
   configs/
     training-minimal.yaml
   data/
@@ -51,6 +51,45 @@ anemoi-demo/
 - The container path in [env/lumi-env.sh](/Users/anisrahm/Documents/anemoi-demo/env/lumi-env.sh) is valid on your system.
 - You have a valid Anemoi dataset and graph file to point the config at.
 
+## Set Up The Environment
+
+This repository does not create a separate Python virtual environment. The runtime environment is the LUMI container configured in [env/lumi-env.sh](/Users/anisrahm/Documents/anemoi-demo/env/lumi-env.sh).
+
+Load the environment variables and validate the container setup:
+
+```bash
+git clone <your-repo-url> anemoi-demo
+cd anemoi-demo
+source env/lumi-env.sh
+./env/install.sh
+```
+
+This does three things:
+
+- exports the LUMI paths and container location;
+- checks that `singularity` or `apptainer` is available;
+- creates the expected data, graph, and output directories and writes `notes/environment.md`.
+
+If you need to override the default container path, export `CONTAINER` before sourcing the env file:
+
+```bash
+export CONTAINER=/path/to/your/container.sif
+source env/lumi-env.sh
+./env/install.sh
+```
+
+## Use The Container
+
+The helper [scripts/lumi_exec.sh](/Users/anisrahm/Documents/anemoi-demo/scripts/lumi_exec.sh) runs commands inside the configured container.
+
+Examples:
+
+```bash
+./scripts/lumi_exec.sh bash
+./scripts/lumi_exec.sh anemoi-training --help
+./scripts/lumi_exec.sh bash -lc "cd $(pwd)/configs && anemoi-training train --config-name=debug"
+```
+
 ## Configure The Minimal Example
 
 Edit [configs/training-minimal.yaml](/Users/anisrahm/Documents/anemoi-demo/configs/training-minimal.yaml) and replace:
@@ -61,20 +100,29 @@ Edit [configs/training-minimal.yaml](/Users/anisrahm/Documents/anemoi-demo/confi
 
 The root directories for data, graphs, and outputs come from [env/lumi-env.sh](/Users/anisrahm/Documents/anemoi-demo/env/lumi-env.sh).
 
-## Commands To Run On LUMI
+## Run Jobs On LUMI
 
 ```bash
-git clone <your-repo-url> anemoi-demo
-cd anemoi-demo
-sbatch jobs/validate_minimal.slurm
+sbatch jobs/validate_minimal.sh
 ```
+
+This submits the container-backed validation job, which runs:
+
+- `./env/install.sh`
+- `./scripts/validate_install.sh`
+- `./scripts/run_smoke.sh`
 
 Submit the short training run after the validation job succeeds:
 
 ```bash
-cd anemoi-demo
-sbatch jobs/train_minimal.slurm
+sbatch jobs/train_minimal.sh
 ```
+
+This training job runs:
+
+- `./env/install.sh`
+- `./scripts/validate_install.sh`
+- `./scripts/run_train.sh`
 
 Inspect job output with:
 

@@ -5,7 +5,7 @@
 - [ ] Validate the LUMI container runtime with [env/install.sh](/Users/anisrahm/Documents/anemoi-demo/env/install.sh).
 - [ ] Confirm `anemoi-training` is available inside the container.
 - [ ] Record container path, module state, and LUMI paths in `notes/environment.md`.
-- [ ] Submit [jobs/validate_minimal.slurm](/Users/anisrahm/Documents/anemoi-demo/jobs/validate_minimal.slurm).
+- [ ] Submit [jobs/validate_minimal.sh](/Users/anisrahm/Documents/anemoi-demo/jobs/validate_minimal.sh).
 
 ## Minimal Data Path
 
@@ -27,8 +27,8 @@
 
 ## First Successful Run
 
-- [ ] Run the smoke test through [jobs/validate_minimal.slurm](/Users/anisrahm/Documents/anemoi-demo/jobs/validate_minimal.slurm).
-- [ ] Run the full minimal job with [jobs/train_minimal.slurm](/Users/anisrahm/Documents/anemoi-demo/jobs/train_minimal.slurm).
+- [ ] Run the smoke test through [jobs/validate_minimal.sh](/Users/anisrahm/Documents/anemoi-demo/jobs/validate_minimal.sh).
+- [ ] Run the full minimal job with [jobs/train_minimal.sh](/Users/anisrahm/Documents/anemoi-demo/jobs/train_minimal.sh).
 - [ ] Confirm logs are written under `logs/`.
 - [ ] Confirm at least one checkpoint is produced.
 - [ ] Save the exact command, config, and output paths in [notes/run-metadata-template.md](/Users/anisrahm/Documents/anemoi-demo/notes/run-metadata-template.md).
