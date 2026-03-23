@@ -2,9 +2,8 @@
 
 ## Environment Bring-Up
 
-- [ ] Validate the LUMI container runtime with [env/install.sh](/Users/anisrahm/Documents/anemoi-demo/env/install.sh).
+- [ ] Create `${ANEMOI_VENV}` from the commands in [README.md](/Users/anisrahm/Documents/anemoi-demo/README.md).
 - [ ] Confirm `anemoi-training` is available inside the container.
-- [ ] Record container path, module state, and LUMI paths in `notes/environment.md`.
 - [ ] Submit [jobs/validate_minimal.sh](/Users/anisrahm/Documents/anemoi-demo/jobs/validate_minimal.sh).
 
 ## Minimal Data Path

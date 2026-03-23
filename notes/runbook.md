@@ -14,6 +14,10 @@ Run one minimal Anemoi training job end to end on a controlled single-node setup
 
 ## Validate The Runtime And Smoke Test
 
+First create the optional venv by following the setup commands in [README.md](/Users/anisrahm/Documents/anemoi-demo/README.md).
+
+Then submit:
+
 ```bash
 sbatch jobs/validate_minimal.sh
 ```
@@ -21,7 +25,6 @@ sbatch jobs/validate_minimal.sh
 Expected result:
 
 - the container starts;
-- the optional venv is created inside `${ANEMOI_VENV}`;
 - the CLI exists inside the container;
 - `anemoi-training train --config-name=debug` starts inside the container;
 - the smoke run reaches dataset, graph, and first-batch initialization;

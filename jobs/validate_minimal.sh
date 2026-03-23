@@ -16,13 +16,12 @@ else
   ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 fi
 
-if [[ ! -f "${ROOT_DIR}/env/install.sh" ]]; then
+if [[ ! -f "${ROOT_DIR}/env/lumi-env.sh" ]]; then
   echo "Could not find repo root from ROOT_DIR=${ROOT_DIR}" >&2
   exit 1
 fi
 
 cd "${ROOT_DIR}"
 
-./env/install.sh
 ./scripts/validate_install.sh
 ./scripts/run_smoke.sh
