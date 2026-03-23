@@ -11,6 +11,6 @@ data/generated/
 data/raw/
 graphs/
 
-# Local notes captured during bring-up
-notes/environment.local.md
-notes/run-record.local.md
+# Generated notes captured during bring-up
+notes/environment.md
+notes/run-record.md

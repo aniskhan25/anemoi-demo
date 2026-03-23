@@ -6,12 +6,11 @@ Run one minimal Anemoi training job end to end on a controlled single-node setup
 
 ## Prerequisites
 
-1. Python 3.9 to 3.12.
-2. Access to a LUMI node with `singularity` or `apptainer`.
-3. The container path from the upstream LUMI guide:
+1. Access to a LUMI-G node with `singularity` or `apptainer`.
+2. The container path from the upstream LUMI guide:
    `lumi-multitorch-full-u24r64f21m43t29-20260225_144743.sif`.
-4. One valid Anemoi dataset.
-5. One valid graph file or a graph configuration that Anemoi can materialize at runtime.
+3. One valid Anemoi dataset.
+4. One valid graph file or a graph configuration that Anemoi can materialize at runtime.
 
 ## Validate The LUMI Runtime
 
@@ -59,6 +58,12 @@ Success means:
 
 ```bash
 ./scripts/run_train.sh
+```
+
+Or submit the bundled Slurm job:
+
+```bash
+sbatch jobs/train_minimal.slurm
 ```
 
 Success means:

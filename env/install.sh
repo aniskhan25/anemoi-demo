@@ -46,9 +46,9 @@ mkdir -p \
   else
     echo "No module command available in this shell."
   fi
-} > "${ROOT_DIR}/notes/environment.local.md"
+} > "${ROOT_DIR}/notes/environment.md"
 
 cat <<EOF
 Validated container prerequisites for LUMI.
-Captured local environment details in notes/environment.local.md
+Captured environment details in notes/environment.md
 EOF

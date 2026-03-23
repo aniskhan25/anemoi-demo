@@ -1,15 +1,14 @@
-# Phase 1 Issues
+# Open Issues
 
 ## Open blockers
 
-1. `anemoi-training` is not installed in the local environment yet.
-2. The LUMI container path and runtime need to be validated on an actual LUMI node.
-3. A concrete dataset path has not been selected.
-4. A concrete graph file or graph-generation path has not been selected.
-5. The minimal config has documented placeholders that must be resolved before execution.
-6. End-to-end training has not been validated from this workspace yet.
+1. The LUMI container path and runtime need to be validated on an actual LUMI node.
+2. A concrete dataset path has not been selected.
+3. A concrete graph file or graph-generation path has not been selected.
+4. The minimal config has documented placeholders that must be resolved before execution.
+5. End-to-end training has not been validated from this workspace yet.
 
-## First things to check after installation
+## First things to check on LUMI
 
 1. The configured LUMI container exists and starts cleanly.
 2. `anemoi-training train` starts inside the container and fails only on unresolved config placeholders.
