@@ -10,7 +10,17 @@
 
 set -euo pipefail
 
-ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+if [[ -n "${SLURM_SUBMIT_DIR:-}" ]]; then
+  ROOT_DIR="${SLURM_SUBMIT_DIR}"
+else
+  ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+fi
+
+if [[ ! -f "${ROOT_DIR}/env/install.sh" ]]; then
+  echo "Could not find repo root from ROOT_DIR=${ROOT_DIR}" >&2
+  exit 1
+fi
+
 cd "${ROOT_DIR}"
 
 ./env/install.sh
