@@ -32,4 +32,6 @@ env \
   -u SLURM_MEM_PER_CPU \
   -u SLURM_MEM_PER_GPU \
   -u SLURM_MEM_PER_NODE \
+  -u SLURM_CPUS_PER_TASK \
+  -u SLURM_TRES_PER_TASK \
   srun singularity exec "${extra_flags[@]}" "${CONTAINER}" "$@"
