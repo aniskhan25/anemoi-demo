@@ -9,8 +9,9 @@ This repository is a minimal LUMI-G example for running Anemoi training inside t
 1. A LUMI container environment file in [env/lumi-env.sh](/Users/anisrahm/Documents/anemoi-demo/env/lumi-env.sh).
 2. A runtime validation script in [env/install.sh](/Users/anisrahm/Documents/anemoi-demo/env/install.sh).
 3. A minimal user config in [configs/training-minimal.yaml](/Users/anisrahm/Documents/anemoi-demo/configs/training-minimal.yaml).
-4. LUMI-only helper scripts in `scripts/`.
-5. A short runbook and checklist in `notes/`.
+4. A small package list in [env/requirements.txt](/Users/anisrahm/Documents/anemoi-demo/env/requirements.txt).
+5. LUMI-only helper scripts in `scripts/`.
+6. A short runbook and checklist in `notes/`.
 
 Every execution script in this repository assumes the LUMI container runtime. There is no separate local-machine execution path.
 
@@ -23,6 +24,7 @@ anemoi-demo/
   env/
     install.sh
     lumi-env.sh
+    requirements.txt
   jobs/
     validate_minimal.sh
     train_minimal.sh
@@ -38,6 +40,7 @@ anemoi-demo/
     run-metadata-template.md
     runbook.md
   scripts/
+    lumi_anemoi_exec.sh
     lumi_exec.sh
     run_smoke.sh
     run_train.sh
@@ -53,7 +56,7 @@ anemoi-demo/
 
 ## Set Up The Environment
 
-This repository does not create a separate Python virtual environment. The runtime environment is the LUMI container configured in [env/lumi-env.sh](/Users/anisrahm/Documents/anemoi-demo/env/lumi-env.sh).
+The runtime follows the LUMI guide baseline: load `singularity-AI-bindings`, launch with `srun singularity exec`, and only extend Python through an optional venv layered on top of the base container. This repo uses that optional venv path because the base container does not ship `anemoi-training`.
 
 Load the environment variables and validate the container setup:
 
@@ -64,11 +67,14 @@ source env/lumi-env.sh
 ./env/install.sh
 ```
 
-This does three things:
+This does the following:
 
 - exports the LUMI paths and container location;
-- checks that `singularity` or `apptainer` is available;
-- creates the expected data, graph, and output directories and writes `notes/environment.md`.
+- loads `singularity-AI-bindings` from `${AI_MODULE_PATH}`;
+- creates the expected data, graph, output, and venv directories;
+- creates `${ANEMOI_VENV}` with `python -m venv --system-site-packages` inside the container;
+- installs `anemoi-training` from [env/requirements.txt](/Users/anisrahm/Documents/anemoi-demo/env/requirements.txt) into `${ANEMOI_VENV}`;
+- writes `notes/environment.md`.
 
 If you need to override the default container path, export `CONTAINER` before sourcing the env file:
 
@@ -80,14 +86,15 @@ source env/lumi-env.sh
 
 ## Use The Container
 
-The helper [scripts/lumi_exec.sh](/Users/anisrahm/Documents/anemoi-demo/scripts/lumi_exec.sh) runs commands inside the configured container.
+The helper [scripts/lumi_exec.sh](/Users/anisrahm/Documents/anemoi-demo/scripts/lumi_exec.sh) follows the guide baseline and runs commands through `srun singularity exec "$CONTAINER" ...`. The helper [scripts/lumi_anemoi_exec.sh](/Users/anisrahm/Documents/anemoi-demo/scripts/lumi_anemoi_exec.sh) uses the same launcher and checks that the optional Anemoi venv exists first.
 
 Examples:
 
 ```bash
 ./scripts/lumi_exec.sh bash
-./scripts/lumi_exec.sh anemoi-training --help
-./scripts/lumi_exec.sh bash -lc "cd $(pwd)/configs && anemoi-training train --config-name=debug"
+./scripts/lumi_exec.sh python -c "import torch; print(torch.cuda.is_available(), torch.cuda.device_count())"
+./scripts/lumi_anemoi_exec.sh bash -lc "'${ANEMOI_VENV}/bin/anemoi-training' --help"
+./scripts/lumi_anemoi_exec.sh bash -lc "cd $(pwd)/configs && '${ANEMOI_VENV}/bin/anemoi-training' train --config-name=debug"
 ```
 
 ## Configure The Minimal Example
