@@ -1,0 +1,16 @@
+.venv/
+__pycache__/
+*.pyc
+
+# Generated run outputs
+logs/**
+!logs/.gitkeep
+
+# Local datasets and graphs
+data/generated/
+data/raw/
+graphs/
+
+# Local notes captured during bring-up
+notes/environment.local.md
+notes/run-record.local.md
