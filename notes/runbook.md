@@ -12,16 +12,10 @@ Run one minimal Anemoi training job end to end on a controlled single-node setup
 3. One valid Anemoi dataset.
 4. One valid graph file or a graph configuration that Anemoi can materialize at runtime.
 
-## Validate The LUMI Runtime
+## Validate The Runtime And Smoke Test
 
 ```bash
-./env/install.sh
-```
-
-## Validate the CLI
-
-```bash
-./scripts/validate_install.sh
+sbatch jobs/validate_minimal.slurm
 ```
 
 Expected result:
@@ -29,6 +23,7 @@ Expected result:
 - the container starts;
 - the CLI exists inside the container;
 - `anemoi-training train --config-name=debug` starts inside the container;
+- the smoke run reaches dataset, graph, and first-batch initialization;
 - if it fails, it should fail because the required data and graph paths are unresolved, not because the install is broken.
 
 ## Fill In The User Config
@@ -41,26 +36,7 @@ Edit [configs/training-minimal.yaml](/Users/anisrahm/Documents/anemoi-demo/confi
 
 The path roots come from [env/lumi-env.sh](/Users/anisrahm/Documents/anemoi-demo/env/lumi-env.sh), so the main remaining config choices are dataset resolution and the concrete dataset and graph file names.
 
-## Smoke Test
-
-```bash
-./scripts/run_smoke.sh
-```
-
-Success means:
-
-- config parses;
-- dataset opens;
-- graph and model initialize;
-- first batches load without crashing immediately.
-
 ## Full Minimal Run
-
-```bash
-./scripts/run_train.sh
-```
-
-Or submit the bundled Slurm job:
 
 ```bash
 sbatch jobs/train_minimal.slurm

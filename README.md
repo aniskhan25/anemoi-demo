@@ -24,6 +24,7 @@ anemoi-demo/
     install.sh
     lumi-env.sh
   jobs/
+    validate_minimal.slurm
     train_minimal.slurm
   configs/
     training-minimal.yaml
@@ -62,29 +63,25 @@ The root directories for data, graphs, and outputs come from [env/lumi-env.sh](/
 
 ## Commands To Run On LUMI
 
-Interactive validation on a LUMI-G debug allocation:
-
 ```bash
-salloc --account=project_462000131 --partition=dev-g --nodes=1 --gpus=1 --time=00:30:00
 git clone <your-repo-url> anemoi-demo
 cd anemoi-demo
-./env/install.sh
-./scripts/validate_install.sh
-./scripts/run_smoke.sh
+sbatch jobs/validate_minimal.slurm
 ```
 
-Short training run from an interactive allocation:
-
-```bash
-cd anemoi-demo
-./scripts/run_train.sh
-```
-
-Batch submission on LUMI-G:
+Submit the short training run after the validation job succeeds:
 
 ```bash
 cd anemoi-demo
 sbatch jobs/train_minimal.slurm
+```
+
+Inspect job output with:
+
+```bash
+squeue --me
+tail -f logs/slurm-validate-<jobid>.out
+tail -f logs/slurm-<jobid>.out
 ```
 
 ## Expected Outputs
