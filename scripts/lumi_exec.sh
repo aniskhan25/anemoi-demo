@@ -27,4 +27,9 @@ if [[ -n "${LUMI_CONTAINER_FLAGS:-}" ]]; then
   read -r -a extra_flags <<< "${LUMI_CONTAINER_FLAGS}"
 fi
 
-srun singularity exec "${extra_flags[@]}" "${CONTAINER}" "$@"
+# Nested srun can inherit conflicting memory env vars from the batch step.
+env \
+  -u SLURM_MEM_PER_CPU \
+  -u SLURM_MEM_PER_GPU \
+  -u SLURM_MEM_PER_NODE \
+  srun singularity exec "${extra_flags[@]}" "${CONTAINER}" "$@"
