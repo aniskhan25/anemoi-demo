@@ -20,6 +20,11 @@ system:
     num_gpus_per_node: 1
     num_nodes: 1
     num_gpus_per_model: 1
+  output:
+    root: ${hardware.paths.output}
+  input:
+    dataset: ${hardware.files.dataset}
+    graph: ${hardware.files.graph}
 
 hardware:
   paths:
