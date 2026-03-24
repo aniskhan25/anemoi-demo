@@ -10,6 +10,8 @@ defaults:
 # This file follows the documented Anemoi config groups and required
 # overrides. Replace every `???` with a concrete value before running.
 
+config_validation: true
+
 data:
   resolution: ???
 
