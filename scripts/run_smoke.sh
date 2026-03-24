@@ -10,4 +10,4 @@ if (($#)); then
 fi
 
 "${ROOT_DIR}/scripts/lumi_anemoi_exec.sh" \
-  bash -lc "cd '${ROOT_DIR}/configs' && '${ANEMOI_VENV}/bin/anemoi-training' train --config-name=training-minimal.yaml dataloader.limit_batches.training=1 dataloader.limit_batches.validation=1 hardware.num_gpus_per_node=1${extra_args}"
+  bash -lc "cd '${ROOT_DIR}/configs' && '${ANEMOI_VENV}/bin/anemoi-training' train --config-name=training-minimal.yaml dataloader.limit_batches.training=1 dataloader.limit_batches.validation=1 system.hardware.num_gpus_per_node=1${extra_args}"
