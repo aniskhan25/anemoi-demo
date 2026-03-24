@@ -21,7 +21,7 @@
 ## Minimal Training Config
 
 - [ ] Fill in every `???` in [configs/training-minimal.yaml](/Users/anisrahm/Documents/anemoi-demo/configs/training-minimal.yaml).
-- [ ] Keep `hardware.num_gpus_per_node=1` unless a larger count is required to run at all.
+- [ ] Keep `system.hardware.num_gpus_per_node=1` unless a larger count is required to run at all.
 - [ ] Keep batch sizes and batch limits small for the first pass.
 
 ## First Successful Run

@@ -140,14 +140,12 @@ If this fails, do not submit jobs yet. Fix the environment first.
 Edit [configs/training-minimal.yaml](/Users/anisrahm/Documents/anemoi-demo/configs/training-minimal.yaml) and replace:
 
 - `data.resolution`
-- `hardware.files.dataset`
-- `hardware.files.graph`
+- `system.input.dataset`
+- `system.input.graph`
 
-The directory roots already come from [env/lumi-env.sh](/Users/anisrahm/Documents/anemoi-demo/env/lumi-env.sh):
+The output root already comes from [env/lumi-env.sh](/Users/anisrahm/Documents/anemoi-demo/env/lumi-env.sh):
 
-- `hardware.paths.data = ${ANEMOI_DATA_ROOT}`
-- `hardware.paths.graph = ${ANEMOI_GRAPH_ROOT}`
-- `hardware.paths.output = ${ANEMOI_OUTPUT_ROOT}`
+- `system.output.root = ${ANEMOI_OUTPUT_ROOT}`
 
 ## Step 6: Submit The Validation Job
 

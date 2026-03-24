@@ -35,8 +35,8 @@ Expected result:
 Edit [configs/training-minimal.yaml](/Users/anisrahm/Documents/anemoi-demo/configs/training-minimal.yaml) and replace:
 
 - `data.resolution`
-- `hardware.files.dataset`
-- `hardware.files.graph`
+- `system.input.dataset`
+- `system.input.graph`
 
 The path roots come from [env/lumi-env.sh](/Users/anisrahm/Documents/anemoi-demo/env/lumi-env.sh), so the main remaining config choices are dataset resolution and the concrete dataset and graph file names.
 

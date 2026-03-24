@@ -4,6 +4,7 @@ defaults:
   - diagnostics: evaluation
   - graph: multi_scale
   - model: gnn
+  - system: example
   - training: default
   - _self_
 
@@ -21,17 +22,8 @@ system:
     num_nodes: 1
     num_gpus_per_model: 1
   output:
-    root: ${hardware.paths.output}
+    root: ${oc.env:ANEMOI_OUTPUT_ROOT}
   input:
-    dataset: ${hardware.files.dataset}
-    graph: ${hardware.files.graph}
-
-hardware:
-  paths:
-    data: ${oc.env:ANEMOI_DATA_ROOT}
-    graph: ${oc.env:ANEMOI_GRAPH_ROOT}
-    output: ${oc.env:ANEMOI_OUTPUT_ROOT}
-  files:
     dataset: ???
     graph: ???
 
