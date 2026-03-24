@@ -99,14 +99,15 @@ cd /path/to/anemoi-demo
 ./scripts/install_venv.sh
 ```
 
-The pinned requirements install Anemoi Training from the official `ecmwf/anemoi-core` git source because `anemoi-training` is not currently published on PyPI. They also pin `zarr<3` because current Anemoi dataset loading still uses the `zarr.storage.BaseStore` API from zarr 2.x.
+The pinned requirements install Anemoi Training from the official `ecmwf/anemoi-core` git source because `anemoi-training` is not currently published on PyPI. They also pin `zarr<3` because current Anemoi dataset loading still uses the `zarr.storage.BaseStore` API from zarr 2.x, and they install `trimesh` explicitly because it is required by the minimal validation path.
 
 What this does:
 
 - loads the LUMI container bindings
 - creates the output/data/graph directories
 - creates a venv at `${ANEMOI_VENV}`
-- installs `anemoi-training` into that venv
+- installs the pinned Anemoi Python dependencies into that venv
+- verifies the key imports used by the minimal validation path (`anemoi.training`, `anemoi.datasets`, `anemoi.graphs`, `trimesh`, `zarr`)
 
 ## Step 4: Verify The Environment
 
@@ -208,6 +209,9 @@ After a successful run, you should have:
 
 - `anemoi-training: command not found`
   The venv was not created, the git-based install failed, or the environment cannot reach GitHub during installation.
+
+- `ModuleNotFoundError: No module named 'trimesh'`
+  Re-run [install_venv.sh](/Users/anisrahm/Documents/anemoi-demo/scripts/install_venv.sh). The pinned requirements now install `trimesh` explicitly and the install script validates that import before finishing.
 
 - `Configured container was not found`
   `CONTAINER` in [env/lumi-env.sh](/Users/anisrahm/Documents/anemoi-demo/env/lumi-env.sh) is wrong for your environment.
