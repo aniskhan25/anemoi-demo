@@ -1,2 +1,2 @@
-anemoi-training
+git+https://github.com/ecmwf/anemoi-core.git#subdirectory=training
 zarr<3

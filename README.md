@@ -34,6 +34,7 @@ anemoi-demo/
     validate_minimal.sh
     train_minimal.sh
   scripts/
+    install_venv.sh
     lumi_exec.sh
     lumi_anemoi_exec.sh
     validate_install.sh
@@ -83,7 +84,7 @@ source env/lumi-env.sh
 
 Do this once before submitting jobs.
 
-The easiest way is to use a short interactive GPU allocation, then create the venv inside the container:
+The easiest way is to use a short interactive GPU allocation, then run the install script:
 
 ```bash
 salloc --account=project_462000131 --partition=small-g \
@@ -95,24 +96,10 @@ Inside that allocation, run:
 
 ```bash
 cd /path/to/anemoi-demo
-source env/lumi-env.sh
-module use "${AI_MODULE_PATH}"
-module load singularity-AI-bindings
-
-mkdir -p \
-  "${ANEMOI_DATA_ROOT}" \
-  "${ANEMOI_GRAPH_ROOT}" \
-  "${ANEMOI_OUTPUT_ROOT}" \
-  "$(dirname "${ANEMOI_VENV}")"
-
-srun singularity exec "${CONTAINER}" bash -lc "
-python3 -m venv '${ANEMOI_VENV}' --system-site-packages
-'${ANEMOI_VENV}/bin/python' -m pip install --upgrade pip setuptools wheel
-'${ANEMOI_VENV}/bin/python' -m pip install -r '$(pwd)/env/requirements.txt'
-"
+./scripts/install_venv.sh
 ```
 
-The pinned requirements include `zarr<3` because current Anemoi dataset loading still uses the `zarr.storage.BaseStore` API from zarr 2.x.
+The pinned requirements install Anemoi Training from the official `ecmwf/anemoi-core` git source because `anemoi-training` is not currently published on PyPI. They also pin `zarr<3` because current Anemoi dataset loading still uses the `zarr.storage.BaseStore` API from zarr 2.x.
 
 What this does:
 
@@ -129,7 +116,7 @@ Still in the same allocation, check that GPU access works:
 ./scripts/lumi_exec.sh python -c "import torch; print(torch.cuda.is_available(), torch.cuda.device_count())"
 ```
 
-Check that Anemoi is available from the venv:
+Check that Anemoi Training is available from the venv:
 
 ```bash
 ./scripts/lumi_anemoi_exec.sh bash -lc "'${ANEMOI_VENV}/bin/anemoi-training' --help"
@@ -220,7 +207,7 @@ After a successful run, you should have:
 ## Common Failure Modes
 
 - `anemoi-training: command not found`
-  The venv was not created, or the install failed.
+  The venv was not created, the git-based install failed, or the environment cannot reach GitHub during installation.
 
 - `Configured container was not found`
   `CONTAINER` in [env/lumi-env.sh](/Users/anisrahm/Documents/anemoi-demo/env/lumi-env.sh) is wrong for your environment.
