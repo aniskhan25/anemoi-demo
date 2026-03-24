@@ -213,6 +213,9 @@ After a successful run, you should have:
 - `ModuleNotFoundError: No module named 'trimesh'`
   Re-run [install_venv.sh](/Users/anisrahm/Documents/anemoi-demo/scripts/install_venv.sh). The pinned requirements now install `trimesh` explicitly and the install script validates that import before finishing.
 
+- `ValueError: prefetch_factor option could only be specified in multiprocessing`
+  The minimal config uses `num_workers = 0`, so [training-minimal.yaml](/Users/anisrahm/Documents/anemoi-demo/configs/training-minimal.yaml) must also set `dataloader.prefetch_factor = null`.
+
 - `Configured container was not found`
   `CONTAINER` in [env/lumi-env.sh](/Users/anisrahm/Documents/anemoi-demo/env/lumi-env.sh) is wrong for your environment.
 

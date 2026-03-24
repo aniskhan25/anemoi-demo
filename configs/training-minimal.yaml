@@ -28,6 +28,7 @@ system:
     graph: /project/project_462000131/anisrahm/anemoi-demo/graphs/first_graph_o48.pt
 
 dataloader:
+  prefetch_factor: null
   num_workers:
     training: 0
     validation: 0
