@@ -14,7 +14,7 @@ defaults:
 config_validation: true
 
 data:
-  resolution: ???
+  resolution: o48
 
 system:
   hardware:
@@ -24,8 +24,8 @@ system:
   output:
     root: ${oc.env:ANEMOI_OUTPUT_ROOT}
   input:
-    dataset: ???
-    graph: ???
+    dataset: /scratch/project_462000131/anisrahm/anemoi-demo/data/era5-o48-2020-2021-6h-v1.zip
+    graph: /project/project_462000131/anisrahm/anemoi-demo/graphs/first_graph_o48.pt
 
 dataloader:
   num_workers:

@@ -18,7 +18,7 @@ The goal of this repository is narrow: run one real Anemoi training job on LUMI-
 - a working project account
 - the LUMI container path from [env/lumi-env.sh](/Users/anisrahm/Documents/anemoi-demo/env/lumi-env.sh)
 - one valid dataset
-- one valid graph file
+- a writable graph output location (the graph can be built on first run)
 
 ## Repository Layout
 
@@ -135,13 +135,23 @@ Check that Anemoi is available from the venv:
 
 If this fails, do not submit jobs yet. Fix the environment first.
 
-## Step 5: Fill In The Training Config
+## Step 5: Fetch The Minimal Sample Dataset And Fill In The Training Config
 
-Edit [configs/training-minimal.yaml](/Users/anisrahm/Documents/anemoi-demo/configs/training-minimal.yaml) and replace:
+For the first working example, use the Anemoi documentation sample dataset. Download it into `${ANEMOI_DATA_ROOT}`:
 
-- `data.resolution`
-- `system.input.dataset`
-- `system.input.graph`
+```bash
+mkdir -p "${ANEMOI_DATA_ROOT}" "${ANEMOI_GRAPH_ROOT}"
+curl -L https://data.ecmwf.int/anemoi-datasets/era5-o48-2020-2021-6h-v1.zip \
+  -o "${ANEMOI_DATA_ROOT}/era5-o48-2020-2021-6h-v1.zip"
+```
+
+Then set [configs/training-minimal.yaml](/Users/anisrahm/Documents/anemoi-demo/configs/training-minimal.yaml) to:
+
+- `data.resolution = o48`
+- `system.input.dataset = /scratch/project_462000131/anisrahm/anemoi-demo/data/era5-o48-2020-2021-6h-v1.zip`
+- `system.input.graph = /project/project_462000131/anisrahm/anemoi-demo/graphs/first_graph_o48.pt`
+
+The graph file does not need to exist yet. Anemoi can construct it on first run and write it to the configured filename.
 
 The output root already comes from [env/lumi-env.sh](/Users/anisrahm/Documents/anemoi-demo/env/lumi-env.sh):
 
@@ -220,4 +230,4 @@ After a successful run, you should have:
   You did not replace one of the `???` values in [configs/training-minimal.yaml](/Users/anisrahm/Documents/anemoi-demo/configs/training-minimal.yaml).
 
 - Dataset or graph file not found
-  The filenames in the config do not match what exists under `${ANEMOI_DATA_ROOT}` or `${ANEMOI_GRAPH_ROOT}`.
+  The dataset filename in the config does not match what exists under `${ANEMOI_DATA_ROOT}`, or the graph output path is not writable under `${ANEMOI_GRAPH_ROOT}`.
