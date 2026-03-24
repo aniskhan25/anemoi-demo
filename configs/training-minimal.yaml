@@ -28,11 +28,10 @@ system:
     graph: /project/project_462000131/anisrahm/anemoi-demo/graphs/first_graph_o48.pt
 
 dataloader:
-  prefetch_factor: null
   num_workers:
-    training: 0
-    validation: 0
-    test: 0
+    training: 1
+    validation: 1
+    test: 1
   batch_size:
     training: 1
     validation: 1
