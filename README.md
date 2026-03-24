@@ -99,7 +99,7 @@ cd /path/to/anemoi-demo
 ./scripts/install_venv.sh
 ```
 
-The pinned requirements install Anemoi Training from the official `ecmwf/anemoi-core` git source because `anemoi-training` is not currently published on PyPI. They also pin `zarr<3` because current Anemoi dataset loading still uses the `zarr.storage.BaseStore` API from zarr 2.x, and they install `trimesh` explicitly because it is required by the minimal validation path.
+The pinned requirements install Anemoi Training from the official `ecmwf/anemoi-core` git source because `anemoi-training` is not currently published on PyPI. They also pin `zarr<3` because current Anemoi dataset loading still uses the `zarr.storage.BaseStore` API from zarr 2.x, and they install `trimesh` and `pyshtools` explicitly because they are required by the minimal validation path.
 
 What this does:
 
@@ -107,7 +107,7 @@ What this does:
 - creates the output/data/graph directories
 - creates a venv at `${ANEMOI_VENV}`
 - installs the pinned Anemoi Python dependencies into that venv
-- verifies the key imports used by the minimal validation path (`anemoi.training`, `anemoi.datasets`, `anemoi.graphs`, `trimesh`, `zarr`)
+- verifies the key imports used by the minimal validation path (`anemoi.training`, `anemoi.datasets`, `anemoi.graphs`, `trimesh`, `pyshtools`, `zarr`)
 
 ## Step 4: Verify The Environment
 
@@ -212,6 +212,9 @@ After a successful run, you should have:
 
 - `ModuleNotFoundError: No module named 'trimesh'`
   Re-run [install_venv.sh](/Users/anisrahm/Documents/anemoi-demo/scripts/install_venv.sh). The pinned requirements now install `trimesh` explicitly and the install script validates that import before finishing.
+
+- `ModuleNotFoundError: No module named 'pyshtools'`
+  Re-run [install_venv.sh](/Users/anisrahm/Documents/anemoi-demo/scripts/install_venv.sh). The pinned requirements now install `pyshtools` explicitly and the install script validates that import before finishing.
 
 - `ValueError: prefetch_factor option could only be specified in multiprocessing` or `dataloader.prefetch_factor` schema errors
   In this Anemoi version, the simplest compatible minimal setup is to keep [training-minimal.yaml](/Users/anisrahm/Documents/anemoi-demo/configs/training-minimal.yaml) at `num_workers = 1` for training, validation, and test.

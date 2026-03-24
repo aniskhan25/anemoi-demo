@@ -16,7 +16,7 @@ python3 -m venv '${ANEMOI_VENV}' --system-site-packages
 '${ANEMOI_VENV}/bin/python' -m pip install -r '${ROOT_DIR}/env/requirements.txt'
 '${ANEMOI_VENV}/bin/python' - <<'PYIN'
 import importlib
-mods = ['anemoi.training', 'anemoi.datasets', 'anemoi.graphs', 'trimesh', 'zarr']
+mods = ['anemoi.training', 'anemoi.datasets', 'anemoi.graphs', 'trimesh', 'pyshtools', 'zarr']
 for name in mods:
     importlib.import_module(name)
 print('Validated imports:', ', '.join(mods))

@@ -1,3 +1,4 @@
 git+https://github.com/ecmwf/anemoi-core.git#subdirectory=training
 zarr<3
 trimesh
+pyshtools
