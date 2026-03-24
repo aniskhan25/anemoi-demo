@@ -70,7 +70,7 @@ This defines:
 - `ANEMOI_DATA_ROOT`
 - `ANEMOI_GRAPH_ROOT`
 - `ANEMOI_OUTPUT_ROOT`
-- `ANEMOI_VENV`
+- `ANEMOI_VENV` (defaults to `${SCRATCH_ROOT}/anemoi-demo/.venv`)
 
 If you need a different container, set it before sourcing:
 
@@ -111,6 +111,8 @@ python3 -m venv '${ANEMOI_VENV}' --system-site-packages
 '${ANEMOI_VENV}/bin/python' -m pip install -r '$(pwd)/env/requirements.txt'
 "
 ```
+
+The pinned requirements include `zarr<3` because current Anemoi dataset loading still uses the `zarr.storage.BaseStore` API from zarr 2.x.
 
 What this does:
 
@@ -231,3 +233,6 @@ After a successful run, you should have:
 
 - Dataset or graph file not found
   The dataset filename in the config does not match what exists under `${ANEMOI_DATA_ROOT}`, or the graph output path is not writable under `${ANEMOI_GRAPH_ROOT}`.
+
+- `AttributeError: module 'zarr.storage' has no attribute 'BaseStore'`
+  Your venv picked up zarr 3.x. Reinstall with [env/requirements.txt](/Users/anisrahm/Documents/anemoi-demo/env/requirements.txt), which pins `zarr<3`.

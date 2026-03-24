@@ -1,1 +1,2 @@
 anemoi-training
+zarr<3
