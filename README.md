@@ -164,7 +164,7 @@ What success looks like:
 
 - the container starts
 - the Anemoi CLI is found
-- config parsing works
+- the key Python dependencies import successfully
 - dataset loading starts
 - graph and model initialization start
 
