@@ -219,6 +219,9 @@ After a successful run, you should have:
 - `ValueError: prefetch_factor option could only be specified in multiprocessing` or `dataloader.prefetch_factor` schema errors
   In this Anemoi version, the simplest compatible minimal setup is to keep [training-minimal.yaml](/Users/anisrahm/Documents/anemoi-demo/configs/training-minimal.yaml) at `num_workers = 1` for training, validation, and test.
 
+- `TypeError: 'NoneType' object is not subscriptable` inside `diagnostics.callbacks.plot`
+  The minimal config does not need plotting callbacks. [training-minimal.yaml](/Users/anisrahm/Documents/anemoi-demo/configs/training-minimal.yaml) now sets `diagnostics.plot.callbacks = []` so validation focuses on the core training and checkpoint path.
+
 - `Configured container was not found`
   `CONTAINER` in [env/lumi-env.sh](/Users/anisrahm/Documents/anemoi-demo/env/lumi-env.sh) is wrong for your environment.
 

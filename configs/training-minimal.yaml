@@ -44,3 +44,7 @@ dataloader:
 training:
   lr:
     rate: 1.0e-4
+
+diagnostics:
+  plot:
+    callbacks: []
