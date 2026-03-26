@@ -10,7 +10,7 @@
 
 set -euo pipefail
 
-ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+ROOT_DIR="${SLURM_SUBMIT_DIR:-$(pwd)}"
 source "${ROOT_DIR}/env/lumi-env.sh"
 
 module use "${AI_MODULE_PATH}"
