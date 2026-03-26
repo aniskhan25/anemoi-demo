@@ -46,7 +46,7 @@ This defines:
 - `ANEMOI_DATA_ROOT`
 - `ANEMOI_GRAPH_ROOT`
 - `ANEMOI_OUTPUT_ROOT`
-- `ANEMOI_VENV` (defaults to `${SCRATCH_ROOT}/anemoi-demo/.venv`)
+- `ANEMOI_VENV` (defaults to `/scratch/${PROJECT_ACCOUNT}/${LUMI_USER}/anemoi-demo/.venv`)
 
 ## Step 3: Create The Python Environment
 
@@ -63,7 +63,7 @@ cd /path/to/anemoi-demo
 ./scripts/install_venv.sh
 ```
 
-The pinned requirements install Anemoi Training from the official `ecmwf/anemoi-core` git source, pin `zarr<3`, and add `trimesh` plus `pyshtools`. The install script only creates the venv and installs those requirements; the validation job is the runtime check.
+The pinned requirements install Anemoi Training from the official `ecmwf/anemoi-core` git source, pin `zarr<3`, and add `trimesh` plus `pyshtools`. The install script only creates the venv and installs those requirements; the validation job is the runtime check. The scripts use the same container module pattern as the LUMI AI Guide: `module purge`, `module use /appl/local/laifs/modules`, and `module load lumi-aif-singularity-bindings`.
 
 ## Step 4: Fetch The Sample Dataset
 

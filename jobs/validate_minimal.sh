@@ -13,17 +13,15 @@ set -euo pipefail
 ROOT_DIR="${SLURM_SUBMIT_DIR:-$(pwd)}"
 source "${ROOT_DIR}/env/lumi-env.sh"
 
-module use "${AI_MODULE_PATH}"
-module load singularity-AI-bindings
+module purge
+module use /appl/local/laifs/modules
+module load lumi-aif-singularity-bindings
 
-exec env -u SLURM_MEM_PER_CPU -u SLURM_MEM_PER_GPU -u SLURM_MEM_PER_NODE -u SLURM_CPUS_PER_TASK -u SLURM_TRES_PER_TASK   srun singularity exec "${CONTAINER}" bash -lc "
+exec singularity exec "${CONTAINER}" bash -lc "
 set -euo pipefail
 VENV_SITE=\$('${ANEMOI_VENV}/bin/python' -c 'import site; print(site.getsitepackages()[0])')
 export PYTHONNOUSERSITE=1
 export PYTHONPATH="\${VENV_SITE}\${PYTHONPATH:+:\${PYTHONPATH}}"
 cd '${ROOT_DIR}/configs'
-exec '${ANEMOI_VENV}/bin/anemoi-training' train --config-name=training-minimal.yaml \
-  dataloader.limit_batches.training=1 \
-  dataloader.limit_batches.validation=1 \
-  system.hardware.num_gpus_per_node=1
+exec '${ANEMOI_VENV}/bin/anemoi-training' train --config-name=training-minimal.yaml   dataloader.limit_batches.training=1   dataloader.limit_batches.validation=1   system.hardware.num_gpus_per_node=1
 "
