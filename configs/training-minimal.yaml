@@ -8,8 +8,8 @@ defaults:
   - training: default
   - _self_
 
-# This file follows the documented Anemoi config groups and required
-# overrides. Replace every `???` with a concrete value before running.
+# Minimal working config for the sample ERA5 dataset on LUMI-G.
+# The graph file is created automatically on the first run.
 
 config_validation: true
 

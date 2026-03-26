@@ -10,7 +10,3 @@ logs/**
 data/generated/
 data/raw/
 graphs/
-
-# Generated notes captured during bring-up
-notes/environment.md
-notes/run-record.md

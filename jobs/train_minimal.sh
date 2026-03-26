@@ -10,18 +10,17 @@
 
 set -euo pipefail
 
-if [[ -n "${SLURM_SUBMIT_DIR:-}" ]]; then
-  ROOT_DIR="${SLURM_SUBMIT_DIR}"
-else
-  ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-fi
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+source "${ROOT_DIR}/env/lumi-env.sh"
 
-if [[ ! -f "${ROOT_DIR}/env/lumi-env.sh" ]]; then
-  echo "Could not find repo root from ROOT_DIR=${ROOT_DIR}" >&2
-  exit 1
-fi
+module use "${AI_MODULE_PATH}"
+module load singularity-AI-bindings
 
-cd "${ROOT_DIR}"
-
-./scripts/validate_install.sh
-./scripts/run_train.sh
+exec env -u SLURM_MEM_PER_CPU -u SLURM_MEM_PER_GPU -u SLURM_MEM_PER_NODE -u SLURM_CPUS_PER_TASK -u SLURM_TRES_PER_TASK   srun singularity exec "${CONTAINER}" bash -lc "
+set -euo pipefail
+VENV_SITE=\$('${ANEMOI_VENV}/bin/python' -c 'import site; print(site.getsitepackages()[0])')
+export PYTHONNOUSERSITE=1
+export PYTHONPATH="\${VENV_SITE}\${PYTHONPATH:+:\${PYTHONPATH}}"
+cd '${ROOT_DIR}/configs'
+exec '${ANEMOI_VENV}/bin/anemoi-training' train --config-name=training-minimal.yaml
+"
