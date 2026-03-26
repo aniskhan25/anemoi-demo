@@ -42,6 +42,7 @@ dataloader:
     test: 2
 
 training:
+  max_epochs: 4
   lr:
     rate: 1.0e-4
 

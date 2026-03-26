@@ -167,6 +167,7 @@ What success looks like:
 - the key Python dependencies import successfully
 - dataset loading starts
 - graph and model initialization start
+- the smoke run finishes within the short validation wall time because the minimal config caps training at `max_epochs = 4`
 
 Watch the job:
 
@@ -221,6 +222,9 @@ After a successful run, you should have:
 
 - `TypeError: 'NoneType' object is not subscriptable` inside `diagnostics.callbacks.plot`
   The minimal config does not need plotting callbacks. [training-minimal.yaml](/Users/anisrahm/Documents/anemoi-demo/configs/training-minimal.yaml) now sets `diagnostics.plot.callbacks = []` so validation focuses on the core training and checkpoint path.
+
+- Validation job reaches late epochs and then hits the wall time
+  The minimal config is intended to be a smoke run, so [training-minimal.yaml](/Users/anisrahm/Documents/anemoi-demo/configs/training-minimal.yaml) now sets `training.max_epochs = 4`.
 
 - `Configured container was not found`
   `CONTAINER` in [env/lumi-env.sh](/Users/anisrahm/Documents/anemoi-demo/env/lumi-env.sh) is wrong for your environment.
