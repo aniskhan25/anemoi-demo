@@ -28,6 +28,7 @@ anemoi-demo/
     validate_multinode.sh
     train_minimal.sh
     train_multigpu.sh
+    train_multinode.sh
   scripts/
     install_venv.sh
 ```
@@ -150,6 +151,16 @@ The matching config is `configs/training-multinode.yaml`:
 - `system.hardware.num_gpus_per_model = 1`
 
 Run this only after `jobs/validate_multigpu.sh` works.
+
+## Step 11: Submit The 2-Node Job
+
+```bash
+sbatch jobs/train_multinode.sh
+```
+
+This is the full 2-node data-parallel training run: 2 nodes, 2 GPUs per node, and `num_gpus_per_model=1`.
+
+Run this only after `jobs/validate_multinode.sh` works.
 
 ## Common Failure Modes
 
