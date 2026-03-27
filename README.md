@@ -17,12 +17,15 @@ anemoi-demo/
   README.md
   configs/
     training-minimal.yaml
+    training-multigpu.yaml
   env/
     lumi-env.sh
     requirements.txt
   jobs/
     validate_minimal.sh
+    validate_multigpu.sh
     train_minimal.sh
+    train_multigpu.sh
   scripts/
     install_venv.sh
 ```
@@ -105,6 +108,30 @@ What success looks like:
 ```bash
 sbatch jobs/train_minimal.sh
 ```
+
+## Step 8: Validate The 2-GPU Path
+
+```bash
+sbatch jobs/validate_multigpu.sh
+```
+
+This is the shortest distributed smoke test. It uses the same 2-GPU launch path as the full distributed job, but limits training and validation to 1 batch each. Run this before the full 2-GPU job.
+
+## Step 9: Submit The 2-GPU Job
+
+```bash
+sbatch jobs/train_multigpu.sh
+```
+
+This is the first distributed step: 1 node, 2 GPUs, and `num_gpus_per_model=1`, so Anemoi uses plain data parallelism. The effective batch size doubles relative to the single-GPU config because the per-rank batch size stays at 1.
+
+The matching config is `configs/training-multigpu.yaml`:
+
+- `system.hardware.num_nodes = 1`
+- `system.hardware.num_gpus_per_node = 2`
+- `system.hardware.num_gpus_per_model = 1`
+
+The job scripts use `srun` so Slurm launches one training process per GPU. This is the pattern to keep when extending the repo later to multi-node runs.
 
 ## Common Failure Modes
 
