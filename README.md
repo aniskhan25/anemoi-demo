@@ -18,12 +18,14 @@ anemoi-demo/
   configs/
     training-minimal.yaml
     training-multigpu.yaml
+    training-multinode.yaml
   env/
     lumi-env.sh
     requirements.txt
   jobs/
     validate_minimal.sh
     validate_multigpu.sh
+    validate_multinode.sh
     train_minimal.sh
     train_multigpu.sh
   scripts/
@@ -132,6 +134,22 @@ The matching config is `configs/training-multigpu.yaml`:
 - `system.hardware.num_gpus_per_model = 1`
 
 The job scripts use `srun` so Slurm launches one training process per GPU. This is the pattern to keep when extending the repo later to multi-node runs.
+
+## Step 10: Validate The 2-Node Path
+
+```bash
+sbatch jobs/validate_multinode.sh
+```
+
+This is the first multi-node smoke test: 2 nodes, 2 GPUs per node, and `num_gpus_per_model=1`. It keeps the same data-parallel setup as the 2-GPU job, but now checks that Slurm and Anemoi start correctly across nodes before you attempt a longer multi-node run.
+
+The matching config is `configs/training-multinode.yaml`:
+
+- `system.hardware.num_nodes = 2`
+- `system.hardware.num_gpus_per_node = 2`
+- `system.hardware.num_gpus_per_model = 1`
+
+Run this only after `jobs/validate_multigpu.sh` works.
 
 ## Common Failure Modes
 

@@ -1,0 +1,51 @@
+defaults:
+  - data: zarr
+  - dataloader: native_grid
+  - diagnostics: evaluation
+  - graph: multi_scale
+  - model: gnn
+  - system: example
+  - training: default
+  - _self_
+
+# Two-node, 2-GPU-per-node data-parallel config for the sample ERA5 dataset.
+# Keep num_gpus_per_model=1 until the multi-node launch path is stable.
+
+config_validation: true
+
+data:
+  resolution: o48
+
+system:
+  hardware:
+    num_gpus_per_node: 2
+    num_nodes: 2
+    num_gpus_per_model: 1
+  output:
+    root: ${oc.env:ANEMOI_OUTPUT_ROOT}
+  input:
+    dataset: /scratch/project_462000131/anisrahm/anemoi-demo/data/era5-o48-2020-2021-6h-v1.zip
+    graph: /project/project_462000131/anisrahm/anemoi-demo/graphs/first_graph_o48.pt
+
+dataloader:
+  num_workers:
+    training: 1
+    validation: 1
+    test: 1
+  batch_size:
+    training: 1
+    validation: 1
+    test: 1
+  limit_batches:
+    training: 8
+    validation: 2
+    test: 2
+
+training:
+  max_epochs: 4
+  lr:
+    rate: 1.0e-4
+
+diagnostics:
+  plot:
+    callbacks: []
