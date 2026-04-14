@@ -4,7 +4,9 @@ layout: default
 
 # Minimal Anemoi Training on LUMI-G
 
-Change only one value:
+This tutorial shows the shortest path to a working Anemoi training run on LUMI-G using a LUMI AI Factory container and a small virtual environment layered on top.
+
+Before you start, set your project account:
 
 ```bash
 export PROJECT_ACCOUNT=project_462000131
