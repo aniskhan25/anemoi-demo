@@ -249,3 +249,5 @@ Check the latest log:
 ```bash
 tail -n 100 "$(ls -1t anemoi-train-*.out | head -n 1)"
 ```
+
+<!-- pages refresh -->
