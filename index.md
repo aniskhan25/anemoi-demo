@@ -1,14 +1,10 @@
 ---
 layout: default
-title: Minimal Anemoi Training on LUMI-G
-description: Set up a minimal Anemoi training run on LUMI-G using a LUMI AI Factory container and a small layered virtual environment.
 ---
 
-> The runnable scripts and config files referenced below belong on the repository's `main` branch. This `gh-pages` branch only publishes the documentation site.
+# Minimal Anemoi Training on LUMI-G
 
-This guide shows the shortest practical path to a working Anemoi training run on LUMI-G using a LUMI AI Factory container and a small virtual environment layered on top.
-
-Before you start, change only one value:
+Change only one value:
 
 ```bash
 export PROJECT_ACCOUNT=project_462000131

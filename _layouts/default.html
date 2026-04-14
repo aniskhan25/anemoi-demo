@@ -3,69 +3,23 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{% if page.title %}{{ page.title }} | {% endif %}{{ site.title }}</title>
-    <meta name="description" content="{{ page.description | default: site.description }}">
+    <title>{{ site.title }}</title>
     <style>
-      :root {
-        --bg: #f7f4ec;
-        --paper: rgba(255, 252, 246, 0.94);
-        --ink: #182126;
-        --muted: #596772;
-        --line: rgba(24, 33, 38, 0.12);
-        --accent: #0e6b66;
-        --accent-2: #d67c2c;
-        --code-bg: #132128;
-        --code-ink: #edf4f7;
-        --shadow: 0 24px 60px rgba(24, 33, 38, 0.12);
-      }
-
       * {
         box-sizing: border-box;
       }
 
-      html {
-        scroll-behavior: smooth;
-      }
-
       body {
         margin: 0;
-        color: var(--ink);
-        background:
-          radial-gradient(circle at top left, rgba(214, 124, 44, 0.16), transparent 28rem),
-          radial-gradient(circle at top right, rgba(14, 107, 102, 0.18), transparent 32rem),
-          linear-gradient(180deg, #f3efe4 0%, var(--bg) 100%);
+        color: #111827;
+        background: #ffffff;
         font: 18px/1.7 Georgia, "Times New Roman", serif;
       }
 
-      .shell {
-        width: min(960px, calc(100vw - 2rem));
+      main {
+        width: min(860px, calc(100vw - 2rem));
         margin: 0 auto;
-        padding: 3rem 0 5rem;
-      }
-
-      .hero,
-      .content {
-        background: var(--paper);
-        border: 1px solid var(--line);
-        box-shadow: var(--shadow);
-        backdrop-filter: blur(8px);
-      }
-
-      .hero {
-        padding: 2.5rem;
-        border-radius: 28px 28px 12px 12px;
-      }
-
-      .eyebrow {
-        display: inline-block;
-        margin-bottom: 1rem;
-        padding: 0.3rem 0.7rem;
-        border-radius: 999px;
-        background: rgba(14, 107, 102, 0.1);
-        color: var(--accent);
-        font: 700 0.78rem/1.2 ui-monospace, SFMono-Regular, Menlo, monospace;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
+        padding: 2rem 0 4rem;
       }
 
       h1, h2, h3 {
@@ -75,50 +29,15 @@
       }
 
       h1 {
-        font-size: clamp(2.4rem, 5vw, 4.6rem);
+        font-size: clamp(2rem, 4vw, 3rem);
       }
 
-      .lede {
-        max-width: 46rem;
-        margin: 0;
-        color: var(--muted);
-        font-size: 1.16rem;
-      }
-
-      .meta {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.75rem;
-        margin-top: 1.5rem;
-        color: var(--muted);
-        font: 600 0.92rem/1.4 ui-monospace, SFMono-Regular, Menlo, monospace;
-      }
-
-      .meta span {
-        padding: 0.35rem 0.6rem;
-        border: 1px solid var(--line);
-        border-radius: 999px;
-        background: rgba(255, 255, 255, 0.58);
-      }
-
-      .content {
-        margin-top: 1rem;
-        padding: 2.5rem;
-        border-radius: 12px 12px 28px 28px;
-      }
-
-      .content > :first-child {
-        margin-top: 0;
-      }
-
-      .content h2 {
+      h2 {
         margin-top: 2.5rem;
-        padding-top: 2rem;
-        border-top: 1px solid var(--line);
         font-size: 1.7rem;
       }
 
-      .content h3 {
+      h3 {
         margin-top: 1.6rem;
         font-size: 1.18rem;
       }
@@ -128,23 +47,22 @@
       }
 
       a {
-        color: var(--accent);
+        color: inherit;
       }
 
       code {
         padding: 0.12rem 0.35rem;
         border-radius: 0.35rem;
-        background: rgba(14, 107, 102, 0.09);
+        background: #f3f4f6;
         font: 0.92em ui-monospace, SFMono-Regular, Menlo, monospace;
       }
 
       pre {
         overflow-x: auto;
         padding: 1rem 1.1rem;
-        border-radius: 16px;
-        background: var(--code-bg);
-        color: var(--code-ink);
-        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+        background: #111827;
+        color: #f9fafb;
       }
 
       pre code {
@@ -153,47 +71,21 @@
         color: inherit;
       }
 
-      blockquote {
-        margin: 1.4rem 0;
-        padding: 0.9rem 1rem;
-        border-left: 4px solid var(--accent-2);
-        background: rgba(214, 124, 44, 0.08);
-      }
-
       hr {
         margin: 2rem 0;
         border: 0;
-        border-top: 1px solid var(--line);
+        border-top: 1px solid #e5e7eb;
       }
 
       @media (max-width: 700px) {
-        .shell {
+        main {
           width: min(100vw - 1rem, 960px);
-          padding: 0.75rem 0 2rem;
-        }
-
-        .hero,
-        .content {
-          padding: 1.25rem;
+          padding: 1rem 0 2rem;
         }
       }
     </style>
   </head>
   <body>
-    <main class="shell">
-      <section class="hero">
-        <div class="eyebrow">GitHub Pages Tutorial</div>
-        <h1>{{ page.title | default: site.title }}</h1>
-        <p class="lede">{{ page.description | default: site.description }}</p>
-        <div class="meta">
-          <span>LUMI-G</span>
-          <span>Anemoi</span>
-          <span>Single-page guide</span>
-        </div>
-      </section>
-      <article class="content">
-        {{ content }}
-      </article>
-    </main>
+    <main>{{ content }}</main>
   </body>
 </html>
