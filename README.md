@@ -181,20 +181,3 @@ sbatch jobs/train_multinode.sh
 This is the full 2-node data-parallel training run: 2 nodes, 2 GPUs per node, and `num_gpus_per_model=1`.
 
 Run this only after `jobs/validate_multinode.sh` works.
-
-## Common Failure Modes
-
-- `anemoi-training: command not found`
-  Re-run `scripts/install_venv.sh`.
-
-- `ModuleNotFoundError` for `trimesh` or `pyshtools`
-  Re-run `scripts/install_venv.sh`.
-
-- `AttributeError: module 'zarr.storage' has no attribute 'BaseStore'`
-  Re-run `scripts/install_venv.sh`. The repo pins `zarr<3`.
-
-- `Configured container was not found`
-  Check `env/lumi-env.sh`.
-
-- dataset or graph path errors
-  Check `configs/training-minimal.yaml` and confirm the files exist under `${ANEMOI_DATA_ROOT}` and `${ANEMOI_GRAPH_ROOT}`.
