@@ -181,10 +181,19 @@ training:
     rate: 1.0e-4
 
 diagnostics:
+  log:
+    mlflow:
+      offline: true
+      tracking_uri: file://${oc.env:ANEMOI_OUTPUT_ROOT}/mlruns
   plot:
     callbacks: []
 EOF
 ```
+
+The `diagnostics.log.mlflow.tracking_uri` line is required for recent
+`anemoi-training` versions. This tutorial uses a local file-backed MLflow
+store under `${ANEMOI_OUTPUT_ROOT}/mlruns`, which is appropriate for LUMI
+compute nodes.
 
 ---
 
