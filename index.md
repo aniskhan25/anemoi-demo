@@ -179,8 +179,6 @@ dataloader:
 
 training:
   max_epochs: 4
-  lr:
-    rate: 1.0e-4
 
 diagnostics:
   log:
@@ -196,6 +194,10 @@ The `diagnostics.log.mlflow.tracking_uri` line is required for recent
 `anemoi-training` versions. This tutorial uses a local file-backed MLflow
 store under `${ANEMOI_OUTPUT_ROOT}/mlruns`, which is appropriate for LUMI
 compute nodes.
+
+The tutorial intentionally does not override `training.lr`. Recent
+`anemoi-training` versions changed the shape of that config block, so the
+minimal example relies on the package default learning-rate settings.
 
 ---
 
