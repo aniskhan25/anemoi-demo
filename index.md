@@ -1,14 +1,10 @@
 ---
+layout: default
 title: Minimal Anemoi Training on LUMI-G
-date: 2026-04-14 10:00:00 +0300
-categories: [Tutorials, HPC]
-tags: [anemoi, lumi-g, slurm, ai-factory]
 description: Set up a minimal Anemoi training run on LUMI-G using a LUMI AI Factory container and a small layered virtual environment.
-pin: true
 ---
 
 > The runnable scripts and config files referenced below belong on the repository's `main` branch. This `gh-pages` branch only publishes the documentation site.
-{: .prompt-info }
 
 This guide shows the shortest practical path to a working Anemoi training run on LUMI-G using a LUMI AI Factory container and a small virtual environment layered on top.
 
@@ -257,12 +253,3 @@ Check the latest log:
 ```bash
 tail -n 100 "$(ls -1t anemoi-train-*.out | head -n 1)"
 ```
-
-Check outputs:
-
-```bash
-find "${ANEMOI_OUTPUT_ROOT}" -maxdepth 3 | head -n 50
-ls -lh "${ANEMOI_GRAPH_ROOT}"
-```
-
-If the install fails because of package versions, rerun `./install_venv.sh`. The `zarr<3` pin is intentional.
