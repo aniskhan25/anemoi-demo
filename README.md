@@ -56,20 +56,32 @@ This defines:
 
 ## Step 3: Create The Python Environment
 
-Use a short interactive GPU allocation, then run:
+Use a short interactive GPU allocation on `dev-g`, then run:
 
 ```bash
-salloc --account=project_462000131 --partition=small-g   --nodes=1 --gpus-per-node=1 --ntasks=1 --cpus-per-task=7   --mem-per-gpu=60G --time=00:15:00
+salloc --account=project_462000131 --partition=dev-g \
+  --nodes=1 --gpus-per-node=1 --ntasks=1 --cpus-per-task=7 \
+  --mem-per-gpu=60G --time=00:15:00
 ```
 
 Inside that allocation:
 
 ```bash
 cd /path/to/anemoi-demo
+rm -rf "${ANEMOI_VENV}"
 ./scripts/install_venv.sh
 ```
 
-The pinned requirements install Anemoi Training from the official `ecmwf/anemoi-core` git source, pin `zarr<3`, and add `trimesh` plus `pyshtools`. The install script only creates the venv and installs those requirements; the validation job is the runtime check. The scripts use the same container module pattern as the LUMI AI Guide: `module purge`, `module use /appl/local/laifs/modules`, and `module load lumi-aif-singularity-bindings`.
+The requirements pin a matched Anemoi release set:
+
+- `anemoi-training==0.7.0`
+- `anemoi-models==0.10.0`
+- `anemoi-graphs==0.7.2`
+- `zarr<3`
+- `trimesh`
+- `pyshtools`
+
+If `env/requirements.txt` changes, remove `${ANEMOI_VENV}` and recreate it instead of upgrading the existing environment in place. The install script only creates the venv and installs those requirements; the validation job is the runtime check. The scripts use the same container module pattern as the LUMI AI Guide: `module purge`, `module use /appl/local/laifs/modules`, and `module load lumi-aif-singularity-bindings`.
 
 ## Step 4: Fetch The Sample Dataset
 
@@ -84,9 +96,13 @@ curl -L https://data.ecmwf.int/anemoi-datasets/era5-o48-2020-2021-6h-v1.zip   -o
 `configs/training-minimal.yaml` is already wired for the sample dataset and a runtime-generated graph:
 
 - `data.resolution = o48`
-- `system.input.dataset = /scratch/project_462000131/anisrahm/anemoi-demo/data/era5-o48-2020-2021-6h-v1.zip`
-- `system.input.graph = /project/project_462000131/anisrahm/anemoi-demo/graphs/first_graph_o48.pt`
+- `hardware.files.dataset = era5-o48-2020-2021-6h-v1.zip`
+- `hardware.files.graph = first_graph_o48.pt`
+- `hardware.paths.data = ${ANEMOI_DATA_ROOT}`
+- `hardware.paths.graph = ${ANEMOI_GRAPH_ROOT}`
+- `hardware.paths.output = ${ANEMOI_OUTPUT_ROOT}`
 - `training.max_epochs = 4`
+- `training.lr.rate = 1.0e-4`
 - `diagnostics.plot.callbacks = []`
 
 ## Step 6: Submit The Validation Job
@@ -130,9 +146,9 @@ This is the first distributed step: 1 node, 2 GPUs, and `num_gpus_per_model=1`, 
 
 The matching config is `configs/training-multigpu.yaml`:
 
-- `system.hardware.num_nodes = 1`
-- `system.hardware.num_gpus_per_node = 2`
-- `system.hardware.num_gpus_per_model = 1`
+- `hardware.num_nodes = 1`
+- `hardware.num_gpus_per_node = 2`
+- `hardware.num_gpus_per_model = 1`
 
 The job scripts use `srun` so Slurm launches one training process per GPU. This is the pattern to keep when extending the repo later to multi-node runs.
 
@@ -146,9 +162,9 @@ This is the first multi-node smoke test: 2 nodes, 2 GPUs per node, and `num_gpus
 
 The matching config is `configs/training-multinode.yaml`:
 
-- `system.hardware.num_nodes = 2`
-- `system.hardware.num_gpus_per_node = 2`
-- `system.hardware.num_gpus_per_model = 1`
+- `hardware.num_nodes = 2`
+- `hardware.num_gpus_per_node = 2`
+- `hardware.num_gpus_per_model = 1`
 
 Run this only after `jobs/validate_multigpu.sh` works.
 

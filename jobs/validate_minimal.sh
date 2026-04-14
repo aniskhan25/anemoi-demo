@@ -23,5 +23,5 @@ VENV_SITE=\$('${ANEMOI_VENV}/bin/python' -c 'import site; print(site.getsitepack
 export PYTHONNOUSERSITE=1
 export PYTHONPATH="\${VENV_SITE}\${PYTHONPATH:+:\${PYTHONPATH}}"
 cd '${ROOT_DIR}/configs'
-exec '${ANEMOI_VENV}/bin/anemoi-training' train --config-name=training-minimal.yaml   dataloader.limit_batches.training=1   dataloader.limit_batches.validation=1   system.hardware.num_gpus_per_node=1
+exec '${ANEMOI_VENV}/bin/anemoi-training' train --config-name=training-minimal.yaml   dataloader.limit_batches.training=1   dataloader.limit_batches.validation=1   hardware.num_gpus_per_node=1
 "
