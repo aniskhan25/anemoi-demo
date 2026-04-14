@@ -141,9 +141,9 @@ defaults:
   - data: zarr
   - dataloader: native_grid
   - diagnostics: evaluation
+  - hardware: example
   - graph: multi_scale
   - model: gnn
-  - system: example
   - training: default
   - _self_
 
@@ -152,16 +152,15 @@ config_validation: true
 data:
   resolution: o48
 
-system:
-  hardware:
-    num_gpus_per_node: 1
-    num_nodes: 1
-    num_gpus_per_model: 1
-  output:
-    root: ${oc.env:ANEMOI_OUTPUT_ROOT}
-  input:
-    dataset: ${oc.env:ANEMOI_DATA_ROOT}/era5-o48-2020-2021-6h-v1.zip
-    graph: ${oc.env:ANEMOI_GRAPH_ROOT}/first_graph_o48.pt
+hardware:
+  num_gpus_per_node: 1
+  paths:
+    data: ${oc.env:ANEMOI_DATA_ROOT}
+    graph: ${oc.env:ANEMOI_GRAPH_ROOT}
+    output: ${oc.env:ANEMOI_OUTPUT_ROOT}
+  files:
+    dataset: era5-o48-2020-2021-6h-v1.zip
+    graph: first_graph_o48.pt
 
 dataloader:
   num_workers:
@@ -179,12 +178,10 @@ dataloader:
 
 training:
   max_epochs: 4
+  lr:
+    rate: 1.0e-4
 
 diagnostics:
-  log:
-    mlflow:
-      offline: true
-      tracking_uri: file://${oc.env:ANEMOI_OUTPUT_ROOT}/mlruns
   plot:
     callbacks: []
 EOF
@@ -202,14 +199,9 @@ rm -rf "${ANEMOI_VENV}"
 ./install_venv.sh
 ```
 
-The `diagnostics.log.mlflow.tracking_uri` line is required for recent
-`anemoi-training` versions. This tutorial uses a local file-backed MLflow
-store under `${ANEMOI_OUTPUT_ROOT}/mlruns`, which is appropriate for LUMI
-compute nodes.
-
-The tutorial intentionally does not override `training.lr`. Recent
-`anemoi-training` versions changed the shape of that config block, so the
-minimal example relies on the package default learning-rate settings.
+This pinned tutorial uses the matching `hardware`-based config layout. If you
+previously created `configs/training-minimal.yaml` from an older version of
+this page, replace it with the block above.
 
 ---
 
