@@ -95,14 +95,9 @@ chmod +x install_venv.sh
 ```
 
 The tutorial pins `anemoi-training`, `anemoi-models`, and `anemoi-graphs`
-together so the package defaults and internal APIs stay aligned. If you already
-created the venv from an older version of this page, remove it and recreate it
-before continuing:
-
-```bash
-rm -rf "${ANEMOI_VENV}"
-./install_venv.sh
-```
+together so the package defaults and internal APIs stay aligned. If
+`requirements.txt` changes, remove `${ANEMOI_VENV}` and recreate it instead of
+trying to upgrade the existing environment in place.
 
 Install from a short `dev-g` allocation:
 
@@ -122,6 +117,7 @@ Inside the allocation:
 
 ```bash
 cd "${ANEMOI_ROOT}"
+rm -rf "${ANEMOI_VENV}"
 ./install_venv.sh
 exit
 ```
