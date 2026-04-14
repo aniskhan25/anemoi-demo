@@ -67,7 +67,7 @@ salloc --account=project_462000131 --partition=dev-g \
 Inside that allocation:
 
 ```bash
-cd /path/to/anemoi-demo
+# from the repo root
 rm -rf "${ANEMOI_VENV}"
 ./scripts/install_venv.sh
 ```
@@ -112,6 +112,7 @@ sbatch jobs/validate_minimal.sh
 ```
 
 This runs a tiny training job with very small batch limits so it acts as a smoke test.
+It is intended for `dev-g`.
 
 What success looks like:
 
@@ -127,6 +128,9 @@ What success looks like:
 ```bash
 sbatch jobs/train_minimal.sh
 ```
+
+This keeps `small-g` so the full single-GPU baseline run has more margin than
+the validation smoke test.
 
 ## Step 8: Validate The 2-GPU Path
 
