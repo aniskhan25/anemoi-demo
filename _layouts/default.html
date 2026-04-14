@@ -7,19 +7,27 @@
     <style>
       :root {
         color-scheme: dark light;
-        --bg: #1b1b1e;
-        --fg: #c9ccd4;
-        --heading: #f3f4f6;
-        --surface: #232328;
-        --surface-border: #31343b;
-        --muted-border: #343841;
-        --link: #7dd3fc;
-        --inline-code-bg: #2b2e36;
-        --code-bg: #111318;
-        --code-fg: #f9fafb;
-        --button-bg: #2f333d;
-        --button-border: #4a5160;
-        --button-hover: #3a4150;
+        --bg: #17181c;
+        --fg: #d9dee7;
+        --heading: #f7f8fa;
+        --surface: #202228;
+        --surface-border: #343844;
+        --muted-border: #3c4350;
+        --link: #8cc7eb;
+        --heading-accent: #8cc7eb;
+        --inline-code-bg: #2a303a;
+        --inline-code-fg: #9ed1ee;
+        --code-bg: #1e2730;
+        --code-panel: #24313d;
+        --code-fg: #eff6fb;
+        --button-bg: #314050;
+        --button-border: #466077;
+        --button-hover: #3c5267;
+        --note-border: #7477b8;
+        --note-bg: #2b2c43;
+        --warning-border: #ec008c;
+        --warning-bg: #462236;
+        --quote: #abb4c5;
       }
 
       @media (prefers-color-scheme: light) {
@@ -30,13 +38,21 @@
           --surface: #ffffff;
           --surface-border: #e9edf3;
           --muted-border: #e5e7eb;
-          --link: #2563eb;
-          --inline-code-bg: #f3f4f6;
-          --code-bg: #111827;
+          --link: #2c6789;
+          --heading-accent: #2c6789;
+          --inline-code-bg: #f3f5f7;
+          --inline-code-fg: #2c6789;
+          --code-bg: #f4f7f9;
+          --code-panel: #abc2d0;
           --code-fg: #f9fafb;
           --button-bg: #1f2937;
           --button-border: #374151;
           --button-hover: #374151;
+          --note-border: #7477b8;
+          --note-bg: #f4f4f9;
+          --warning-border: #ec008c;
+          --warning-bg: #fef2f9;
+          --quote: #5b6470;
         }
       }
 
@@ -48,21 +64,13 @@
         margin: 0;
         color: var(--fg);
         background: var(--bg);
-        font: 1.08rem/1.75 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+        font: 1.05rem/1.75 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
       }
 
       main {
-        width: min(980px, calc(100vw - 2rem));
+        width: min(52rem, calc(100vw - 2rem));
         margin: 0 auto;
-        padding: 2.5rem 0 4rem;
-      }
-
-      article {
-        padding: 2.25rem 2.5rem 3rem;
-        border: 1px solid var(--surface-border);
-        border-radius: 1.1rem;
-        background: var(--surface);
-        box-shadow: 0 18px 48px rgba(0, 0, 0, 0.18);
+        padding: 2.25rem 0 4rem;
       }
 
       h1, h2, h3 {
@@ -87,20 +95,26 @@
       }
 
       h3 {
-        margin-top: 1.6rem;
-        font-size: 1.2rem;
+        margin-top: 2.25rem;
+        margin-bottom: 0.4rem;
+        line-height: 1.25;
+        font-size: 1.35rem;
+        font-weight: 700;
+        color: var(--heading-accent);
       }
 
       p, ul, ol {
-        margin: 1rem 0;
+        margin: 1rem 0 1.1rem;
       }
 
       ul, ol {
+        margin-top: 0.75rem;
+        margin-bottom: 1.5rem;
         padding-left: 1.4rem;
       }
 
-      li + li {
-        margin-top: 0.35rem;
+      li {
+        margin-bottom: 0.45rem;
       }
 
       a {
@@ -120,7 +134,13 @@
         padding: 0.12rem 0.35rem;
         border-radius: 0.35rem;
         background: var(--inline-code-bg);
+        color: var(--inline-code-fg);
         font: 0.92em ui-monospace, SFMono-Regular, Menlo, monospace;
+      }
+
+      .highlighter-rouge {
+        margin: 1.5rem 0;
+        max-width: 100%;
       }
 
       .code-block {
@@ -148,12 +168,12 @@
       pre {
         margin: 1rem 0;
         overflow-x: auto;
-        padding: 1rem 1.1rem 1.1rem;
-        border: 1px solid rgba(255, 255, 255, 0.06);
+        padding: 1rem 3.5rem 1rem 1rem;
+        border: 1px solid var(--code-panel);
         border-radius: 0.85rem;
         background: var(--code-bg);
-        color: var(--code-fg);
-        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02);
+        color: #17212b;
+        box-shadow: none;
       }
 
       pre code {
@@ -163,6 +183,143 @@
         font-size: 0.93rem;
       }
 
+      .highlight pre,
+      .highlighter-rouge pre {
+        background: var(--code-bg);
+      }
+
+      .highlight .c,
+      .highlight .cm,
+      .highlight .c1,
+      .highlight .cs {
+        color: #6b7280;
+      }
+
+      .highlight .k,
+      .highlight .kd,
+      .highlight .kp,
+      .highlight .kr,
+      .highlight .kt,
+      .highlight .nt {
+        color: #b4236b;
+      }
+
+      .highlight .s,
+      .highlight .s1,
+      .highlight .s2,
+      .highlight .sb,
+      .highlight .sh,
+      .highlight .sx,
+      .highlight .si {
+        color: #0f766e;
+      }
+
+      .highlight .na,
+      .highlight .nb,
+      .highlight .bp,
+      .highlight .nv,
+      .highlight .vc,
+      .highlight .vg,
+      .highlight .vi {
+        color: #2c6789;
+      }
+
+      .highlight .nf,
+      .highlight .fm {
+        color: #6d28d9;
+      }
+
+      .highlight .mi,
+      .highlight .mf,
+      .highlight .mh,
+      .highlight .il,
+      .highlight .mo {
+        color: #b45309;
+      }
+
+      .highlight .o,
+      .highlight .ow {
+        color: #374151;
+      }
+
+      .highlight .err,
+      .highlight .gd {
+        color: #b91c1c;
+      }
+
+      .highlight .gi {
+        color: #166534;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        pre {
+          color: var(--code-fg);
+        }
+
+        .highlight .c,
+        .highlight .cm,
+        .highlight .c1,
+        .highlight .cs {
+          color: #94a3b8;
+        }
+
+        .highlight .k,
+        .highlight .kd,
+        .highlight .kp,
+        .highlight .kr,
+        .highlight .kt,
+        .highlight .nt {
+          color: #f472b6;
+        }
+
+        .highlight .s,
+        .highlight .s1,
+        .highlight .s2,
+        .highlight .sb,
+        .highlight .sh,
+        .highlight .sx,
+        .highlight .si {
+          color: #5eead4;
+        }
+
+        .highlight .na,
+        .highlight .nb,
+        .highlight .bp,
+        .highlight .nv,
+        .highlight .vc,
+        .highlight .vg,
+        .highlight .vi {
+          color: #93c5fd;
+        }
+
+        .highlight .nf,
+        .highlight .fm {
+          color: #c4b5fd;
+        }
+
+        .highlight .mi,
+        .highlight .mf,
+        .highlight .mh,
+        .highlight .il,
+        .highlight .mo {
+          color: #fdba74;
+        }
+
+        .highlight .o,
+        .highlight .ow {
+          color: #cbd5e1;
+        }
+
+        .highlight .err,
+        .highlight .gd {
+          color: #fca5a5;
+        }
+
+        .highlight .gi {
+          color: #86efac;
+        }
+      }
+
       hr {
         margin: 2rem 0;
         border: 0;
@@ -170,27 +327,58 @@
       }
 
       blockquote {
-        margin: 1.25rem 0;
-        padding: 0.1rem 0 0.1rem 1rem;
-        border-left: 0.22rem solid #6b7280;
-        color: #9ca3af;
+        margin: 1.25rem 0 2rem;
+        padding: 0.9rem 1.1rem;
+        border-radius: 8px;
+        border: 1px solid var(--note-border);
+        border-left: 6px solid var(--note-border);
+        background: var(--note-bg);
+        color: inherit;
+      }
+
+      blockquote p:last-child {
+        margin-bottom: 0;
+      }
+
+      blockquote.warning {
+        border-color: var(--warning-border);
+        background: var(--warning-bg);
+      }
+
+      .warning,
+      .note {
+        margin: 1.25rem 0 2rem;
+        padding: 0.9rem 1.1rem;
+        border-radius: 8px;
+      }
+
+      .note {
+        border: 1px solid var(--note-border);
+        border-left: 6px solid var(--note-border);
+        background: var(--note-bg);
+      }
+
+      .warning {
+        border: 1px solid var(--warning-border);
+        border-left: 6px solid var(--warning-border);
+        background: var(--warning-bg);
+      }
+
+      .note > :last-child,
+      .warning > :last-child {
+        margin-bottom: 0;
       }
 
       @media (max-width: 700px) {
         main {
-          width: min(100vw - 1rem, 960px);
+          width: min(100vw - 1rem, 52rem);
           padding: 1rem 0 2rem;
-        }
-
-        article {
-          padding: 1.35rem 1rem 2rem;
-          border-radius: 0.85rem;
         }
       }
     </style>
   </head>
   <body>
-    <main><article>{{ content }}</article></main>
+    <main>{{ content }}</main>
     <script>
       function fallbackCopy(text) {
         const textarea = document.createElement("textarea");

@@ -3,7 +3,12 @@ description: Set up a minimal Anemoi training run on LUMI-G using a LUMI AI Fact
 url: "https://aniskhan25.github.io"
 baseurl: "/anemoi-demo"
 markdown: kramdown
+highlighter: rouge
 kramdown:
   input: GFM
+  syntax_highlighter: rouge
+  syntax_highlighter_opts:
+    block:
+      line_numbers: false
 exclude:
   - README.md
