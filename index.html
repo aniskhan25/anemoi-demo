@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Minimal Anemoi Training on LUMI-G</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        color: #111827;
+        background: #ffffff;
+        font: 18px/1.7 Georgia, "Times New Roman", serif;
+      }
+
+      main {
+        width: min(860px, calc(100vw - 2rem));
+        margin: 0 auto;
+        padding: 2rem 0 4rem;
+      }
+
+      h1, h2, h3 {
+        line-height: 1.15;
+        margin: 0 0 0.8rem;
+        letter-spacing: -0.02em;
+      }
+
+      h1 {
+        font-size: clamp(2rem, 4vw, 3rem);
+      }
+
+      h2 {
+        margin-top: 2.5rem;
+        font-size: 1.7rem;
+      }
+
+      p, ul, ol {
+        margin: 1rem 0;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      code {
+        padding: 0.12rem 0.35rem;
+        border-radius: 0.35rem;
+        background: #f3f4f6;
+        font: 0.92em ui-monospace, SFMono-Regular, Menlo, monospace;
+      }
+
+      .code-block {
+        position: relative;
+        margin: 1rem 0;
+      }
+
+      .copy-button {
+        position: absolute;
+        top: 0.75rem;
+        right: 0.75rem;
+        border: 1px solid #374151;
+        border-radius: 0.5rem;
+        background: #1f2937;
+        color: #f9fafb;
+        padding: 0.3rem 0.6rem;
+        font: 12px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace;
+        cursor: pointer;
+      }
+
+      .copy-button:hover {
+        background: #374151;
+      }
+
+      pre {
+        overflow-x: auto;
+        margin: 0;
+        padding: 1rem 1.1rem;
+        border-radius: 10px;
+        background: #111827;
+        color: #f9fafb;
+      }
+
+      pre code {
+        padding: 0;
+        background: transparent;
+        color: inherit;
+      }
+
+      hr {
+        margin: 2rem 0;
+        border: 0;
+        border-top: 1px solid #e5e7eb;
+      }
+
+      @media (max-width: 700px) {
+        main {
+          width: min(100vw - 1rem, 960px);
+          padding: 1rem 0 2rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Minimal Anemoi Training on LUMI-G</h1>
+
+      <p>Change only one value:</p>
+
+      <pre><code>export PROJECT_ACCOUNT=project_462000131</code></pre>
+
+      <hr>
+
+      <h2>1. Create the workspace</h2>
+
+      <pre><code>export LUMI_USER="${LUMI_USER:-$USER}"
+export ANEMOI_ROOT="/scratch/${PROJECT_ACCOUNT}/${LUMI_USER}/anemoi"
+mkdir -p "${ANEMOI_ROOT}"/{configs,jobs}
+cd "${ANEMOI_ROOT}"</code></pre>
+
+      <p>Create <code>env.sh</code>:</p>
+
+      <pre><code>cat &gt; env.sh &lt;&lt;'EOF'
+#!/usr/bin/env bash
+set -euo pipefail
+
+export PROJECT_ACCOUNT="${PROJECT_ACCOUNT:-project_462000131}"
+export LUMI_USER="${LUMI_USER:-${USER}}"
+export ANEMOI_ROOT="${ANEMOI_ROOT:-/scratch/${PROJECT_ACCOUNT}/${LUMI_USER}/anemoi}"
+export CONTAINER="${CONTAINER:-/appl/local/laifs/containers/lumi-multitorch-u24r64f21m43t29-20260225_144743/lumi-multitorch-full-u24r64f21m43t29-20260225_144743.sif}"
+
+export ANEMOI_DATA_ROOT="${ANEMOI_DATA_ROOT:-${ANEMOI_ROOT}/data}"
+export ANEMOI_GRAPH_ROOT="${ANEMOI_GRAPH_ROOT:-${ANEMOI_ROOT}/graphs}"
+export ANEMOI_OUTPUT_ROOT="${ANEMOI_OUTPUT_ROOT:-${ANEMOI_ROOT}/logs}"
+export ANEMOI_VENV="${ANEMOI_VENV:-${ANEMOI_ROOT}/.venv}"
+EOF
+
+chmod +x env.sh
+source env.sh
+ls -lh "$CONTAINER"</code></pre>
+
+      <hr>
+
+      <h2>2. Install Anemoi into a small venv</h2>
+
+      <p>Create <code>requirements.txt</code>:</p>
+
+      <pre><code>cat &gt; requirements.txt &lt;&lt;'EOF'
+git+https://github.com/ecmwf/anemoi-core.git#subdirectory=training
+zarr&lt;3
+trimesh
+pyshtools
+EOF</code></pre>
+
+      <p>Create <code>install_venv.sh</code>:</p>
+
+      <pre><code>cat &gt; install_venv.sh &lt;&lt;'EOF'
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &amp;&amp; pwd)"
+source "${ROOT_DIR}/env.sh"
+
+module purge
+module use /appl/local/laifs/modules
+module load lumi-aif-singularity-bindings
+
+mkdir -p \
+  "${ANEMOI_DATA_ROOT}" \
+  "${ANEMOI_GRAPH_ROOT}" \
+  "${ANEMOI_OUTPUT_ROOT}" \
+  "$(dirname "${ANEMOI_VENV}")"
+
+singularity exec "${CONTAINER}" bash -lc "
+  set -euo pipefail
+  python3 -m venv '${ANEMOI_VENV}' --system-site-packages
+  '${ANEMOI_VENV}/bin/python' -m pip install --upgrade pip setuptools wheel
+  '${ANEMOI_VENV}/bin/python' -m pip install -r '${ROOT_DIR}/requirements.txt'
+"
+EOF
+
+chmod +x install_venv.sh</code></pre>
+
+      <p>Install from a short <code>dev-g</code> allocation:</p>
+
+      <pre><code>salloc \
+  --account="${PROJECT_ACCOUNT}" \
+  --partition=dev-g \
+  --nodes=1 \
+  --gpus-per-node=1 \
+  --ntasks=1 \
+  --cpus-per-task=7 \
+  --mem-per-gpu=60G \
+  --time=00:30:00</code></pre>
+
+      <p>Inside the allocation:</p>
+
+      <pre><code>cd "${ANEMOI_ROOT}"
+./install_venv.sh
+exit</code></pre>
+
+      <hr>
+
+      <h2>3. Download the sample dataset</h2>
+
+      <pre><code>cd "${ANEMOI_ROOT}"
+source env.sh
+
+curl -L \
+  https://data.ecmwf.int/anemoi-datasets/era5-o48-2020-2021-6h-v1.zip \
+  -o "${ANEMOI_DATA_ROOT}/era5-o48-2020-2021-6h-v1.zip"
+
+ls -lh "${ANEMOI_DATA_ROOT}/era5-o48-2020-2021-6h-v1.zip"</code></pre>
+
+      <hr>
+
+      <h2>4. Create the minimal config</h2>
+
+      <p>Create <code>configs/training-minimal.yaml</code>:</p>
+
+      <pre><code>cat &gt; configs/training-minimal.yaml &lt;&lt;'EOF'
+defaults:
+  - data: zarr
+  - dataloader: native_grid
+  - diagnostics: evaluation
+  - graph: multi_scale
+  - model: gnn
+  - system: example
+  - training: default
+  - _self_
+
+config_validation: true
+
+data:
+  resolution: o48
+
+system:
+  hardware:
+    num_gpus_per_node: 1
+    num_nodes: 1
+    num_gpus_per_model: 1
+  output:
+    root: ${oc.env:ANEMOI_OUTPUT_ROOT}
+  input:
+    dataset: ${oc.env:ANEMOI_DATA_ROOT}/era5-o48-2020-2021-6h-v1.zip
+    graph: ${oc.env:ANEMOI_GRAPH_ROOT}/first_graph_o48.pt
+
+dataloader:
+  num_workers:
+    training: 1
+    validation: 1
+    test: 1
+  batch_size:
+    training: 1
+    validation: 1
+    test: 1
+  limit_batches:
+    training: 8
+    validation: 2
+    test: 2
+
+training:
+  max_epochs: 4
+  lr:
+    rate: 1.0e-4
+
+diagnostics:
+  plot:
+    callbacks: []
+EOF</code></pre>
+
+      <hr>
+
+      <h2>5. Create the training job</h2>
+
+      <p>Create <code>jobs/train_minimal.sh</code>:</p>
+
+      <pre><code>cat &gt; jobs/train_minimal.sh &lt;&lt;'EOF'
+#!/bin/bash
+#SBATCH --job-name=anemoi-train
+#SBATCH --account=project_462000131
+#SBATCH --partition=small-g
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --gpus=1
+#SBATCH --cpus-per-task=7
+#SBATCH --time=00:30:00
+#SBATCH --output=%x-%j.out
+
+set -euo pipefail
+
+ROOT_DIR="${SLURM_SUBMIT_DIR:-$(cd "$(dirname "$0")"/.. &amp;&amp; pwd)}"
+cd "${ROOT_DIR}"
+source "${ROOT_DIR}/env.sh"
+
+module purge
+module use /appl/local/laifs/modules
+module load lumi-aif-singularity-bindings
+
+exec singularity exec "${CONTAINER}" bash -lc "
+  set -euo pipefail
+  VENV_SITE=\$('${ANEMOI_VENV}/bin/python' -c 'import site; print(site.getsitepackages()[0])')
+  export PYTHONNOUSERSITE=1
+  export PYTHONPATH=\"\${VENV_SITE}\${PYTHONPATH:+:\${PYTHONPATH}}\"
+  cd '${ROOT_DIR}/configs'
+  exec '${ANEMOI_VENV}/bin/anemoi-training' train --config-name=training-minimal.yaml
+"
+EOF
+
+sed -i "s/project_462000131/${PROJECT_ACCOUNT}/g" jobs/train_minimal.sh
+chmod +x jobs/train_minimal.sh</code></pre>
+
+      <hr>
+
+      <h2>6. Submit and check</h2>
+
+      <pre><code>cd "${ANEMOI_ROOT}"
+sbatch jobs/train_minimal.sh</code></pre>
+
+      <p>Check status:</p>
+
+      <pre><code>squeue -u "$USER"</code></pre>
+
+      <p>Check the latest log:</p>
+
+      <pre><code>tail -n 100 "$(ls -1t anemoi-train-*.out | head -n 1)"</code></pre>
+    </main>
+
+    <script>
+      for (const pre of document.querySelectorAll("pre")) {
+        const wrapper = document.createElement("div");
+        wrapper.className = "code-block";
+        pre.parentNode.insertBefore(wrapper, pre);
+        wrapper.appendChild(pre);
+
+        const button = document.createElement("button");
+        button.className = "copy-button";
+        button.type = "button";
+        button.textContent = "Copy";
+        button.addEventListener("click", async () => {
+          const text = pre.innerText;
+          try {
+            await navigator.clipboard.writeText(text);
+            const previous = button.textContent;
+            button.textContent = "Copied";
+            setTimeout(() => {
+              button.textContent = previous;
+            }, 1200);
+          } catch {
+            button.textContent = "Failed";
+            setTimeout(() => {
+              button.textContent = "Copy";
+            }, 1200);
+          }
+        });
+        wrapper.appendChild(button);
+      }
+    </script>
+  </body>
+</html>
