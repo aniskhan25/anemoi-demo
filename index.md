@@ -55,6 +55,8 @@ Create `requirements.txt`:
 ```bash
 cat > requirements.txt <<'EOF'
 anemoi-training==0.7.0
+anemoi-models==0.10.0
+anemoi-graphs==0.7.2
 zarr<3
 trimesh
 pyshtools
@@ -90,6 +92,16 @@ singularity exec "${CONTAINER}" bash -lc "
 EOF
 
 chmod +x install_venv.sh
+```
+
+The tutorial pins `anemoi-training`, `anemoi-models`, and `anemoi-graphs`
+together so the package defaults and internal APIs stay aligned. If you already
+created the venv from an older version of this page, remove it and recreate it
+before continuing:
+
+```bash
+rm -rf "${ANEMOI_VENV}"
+./install_venv.sh
 ```
 
 Install from a short `dev-g` allocation:
