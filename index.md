@@ -54,7 +54,7 @@ Create `requirements.txt`:
 
 ```bash
 cat > requirements.txt <<'EOF'
-git+https://github.com/ecmwf/anemoi-core.git#subdirectory=training
+anemoi-training==0.7.0
 zarr<3
 trimesh
 pyshtools
@@ -188,6 +188,18 @@ diagnostics:
   plot:
     callbacks: []
 EOF
+```
+
+The tutorial pins `anemoi-training==0.7.0` on purpose. Installing from
+`ecmwf/anemoi-core` `main` caused the tutorial to drift as the config schema
+and internal APIs changed.
+
+If you already created the venv from an older version of this tutorial, remove
+it and recreate it:
+
+```bash
+rm -rf "${ANEMOI_VENV}"
+./install_venv.sh
 ```
 
 The `diagnostics.log.mlflow.tracking_uri` line is required for recent
