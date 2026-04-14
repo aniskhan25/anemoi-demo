@@ -1,0 +1,9 @@
+title: Minimal Anemoi Training on LUMI-G
+description: Set up a minimal Anemoi training run on LUMI-G using a LUMI AI Factory container and a small layered virtual environment.
+url: "https://aniskhan25.github.io"
+baseurl: "/anemoi-demo"
+markdown: kramdown
+kramdown:
+  input: GFM
+exclude:
+  - README.md
