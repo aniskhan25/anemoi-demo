@@ -31,6 +31,12 @@ Expected artifact:
 
 Submit the same startup-debug job at increasing node counts.
 
+The job exports a fixed safe Lightning seed by default:
+
+- `ANEMOI_GLOBAL_SEED=12345`
+
+This avoids a high-rank seed overflow seen at `32` full nodes / `256` ranks.
+
 ### 8 nodes
 
 ```bash

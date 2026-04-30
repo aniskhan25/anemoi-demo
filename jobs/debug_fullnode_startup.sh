@@ -20,6 +20,7 @@ ANEMOI_BATCH_SIZE="${ANEMOI_BATCH_SIZE:-8}"
 ANEMOI_TRAIN_LIMIT="${ANEMOI_TRAIN_LIMIT:-500}"
 ANEMOI_VAL_LIMIT="${ANEMOI_VAL_LIMIT:-10}"
 ANEMOI_MAX_EPOCHS="${ANEMOI_MAX_EPOCHS:-1}"
+ANEMOI_GLOBAL_SEED="${ANEMOI_GLOBAL_SEED:-12345}"
 
 module purge
 module use /appl/local/laifs/modules
@@ -36,6 +37,7 @@ echo "  batch_size=${ANEMOI_BATCH_SIZE}"
 echo "  train_limit=${ANEMOI_TRAIN_LIMIT}"
 echo "  val_limit=${ANEMOI_VAL_LIMIT}"
 echo "  max_epochs=${ANEMOI_MAX_EPOCHS}"
+echo "  global_seed=${ANEMOI_GLOBAL_SEED}"
 echo "  graph=${ANEMOI_GRAPH_ROOT}/first_graph_o48.pt"
 echo "  dataset=${ANEMOI_DATA_ROOT}/era5-o48-2020-2021-6h-v1.zip"
 
@@ -60,6 +62,7 @@ export PYTHONPATH=\"\${VENV_SITE}\${PYTHONPATH:+:\${PYTHONPATH}}\"
 export TORCH_DISTRIBUTED_DEBUG=DETAIL
 export NCCL_DEBUG=INFO
 export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
+export PL_GLOBAL_SEED=${ANEMOI_GLOBAL_SEED}
 cd '${ROOT_DIR}/configs'
 echo \"\$(date -Is) rank=\${SLURM_PROCID} starting anemoi-training\"
 exec '${ANEMOI_VENV}/bin/anemoi-training' train --config-name=training-multinode.yaml \
