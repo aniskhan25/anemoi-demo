@@ -12,8 +12,8 @@ fi
 ANEMOI_NODES="${ANEMOI_NODES:-${SLURM_NNODES}}"
 ANEMOI_GPUS_PER_NODE="${ANEMOI_GPUS_PER_NODE:-8}"
 ANEMOI_BATCH_SIZE="${ANEMOI_BATCH_SIZE:-8}"
-ANEMOI_TRAIN_LIMIT="${ANEMOI_TRAIN_LIMIT:-500}"
-ANEMOI_VAL_LIMIT="${ANEMOI_VAL_LIMIT:-10}"
+ANEMOI_TRAIN_LIMIT="${ANEMOI_TRAIN_LIMIT:-50}"
+ANEMOI_VAL_LIMIT="${ANEMOI_VAL_LIMIT:-2}"
 ANEMOI_MAX_EPOCHS="${ANEMOI_MAX_EPOCHS:-1}"
 
 module purge
@@ -39,6 +39,7 @@ echo "  val_limit=${ANEMOI_VAL_LIMIT}"
 echo "  max_epochs=${ANEMOI_MAX_EPOCHS}"
 echo "  graph=${ANEMOI_GRAPH_ROOT}/first_graph_o48.pt"
 echo "  dataset=${ANEMOI_DATA_ROOT}/era5-o48-2020-2021-6h-v1.zip"
+echo "  note=defaults are smoke-test oriented; override with env vars for throughput runs"
 
 exec srun \
   --nodes="${ANEMOI_NODES}" \

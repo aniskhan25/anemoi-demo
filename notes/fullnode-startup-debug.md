@@ -37,6 +37,15 @@ The job exports a fixed safe Lightning seed by default:
 
 This avoids a high-rank seed overflow seen at `32` full nodes / `256` ranks.
 
+For the first interactive `8` full-node bring-up, use a reduced startup target:
+
+- `batch_size=8`
+- `training.limit_batches=50`
+- `validation.limit_batches=2`
+- `max_epochs=1`
+
+The interactive helper now defaults to those smoke-test values.
+
 ### 8 nodes
 
 ```bash
