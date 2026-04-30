@@ -46,6 +46,18 @@ For the first interactive `8` full-node bring-up, use a reduced startup target:
 
 The interactive helper now defaults to those smoke-test values.
 
+To reduce shared-filesystem pressure after `Seed set`, the interactive full-node
+launcher now stages the dataset zip and precreated graph once per node into:
+
+```bash
+/tmp/anemoi-demo
+```
+
+This behavior is enabled by default for the smoke helper and can be controlled with:
+
+- `ANEMOI_STAGE_DATA=1|0`
+- `ANEMOI_STAGE_GRAPH=1|0`
+
 ### 8 nodes
 
 ```bash
