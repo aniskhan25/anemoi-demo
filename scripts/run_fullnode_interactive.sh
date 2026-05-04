@@ -15,6 +15,7 @@ ANEMOI_BATCH_SIZE="${ANEMOI_BATCH_SIZE:-8}"
 ANEMOI_TRAIN_LIMIT="${ANEMOI_TRAIN_LIMIT:-500}"
 ANEMOI_VAL_LIMIT="${ANEMOI_VAL_LIMIT:-10}"
 ANEMOI_MAX_EPOCHS="${ANEMOI_MAX_EPOCHS:-1}"
+ANEMOI_CONFIG_NAME="${ANEMOI_CONFIG_NAME:-training-multinode.yaml}"
 ANEMOI_STAGE_ROOT="${ANEMOI_STAGE_ROOT:-/tmp/anemoi-demo}"
 ANEMOI_STAGE_DATA="${ANEMOI_STAGE_DATA:-1}"
 ANEMOI_STAGE_GRAPH="${ANEMOI_STAGE_GRAPH:-1}"
@@ -40,6 +41,7 @@ echo "  batch_size=${ANEMOI_BATCH_SIZE}"
 echo "  train_limit=${ANEMOI_TRAIN_LIMIT}"
 echo "  val_limit=${ANEMOI_VAL_LIMIT}"
 echo "  max_epochs=${ANEMOI_MAX_EPOCHS}"
+echo "  config_name=${ANEMOI_CONFIG_NAME}"
 echo "  graph=${ANEMOI_GRAPH_ROOT}/first_graph_o48.pt"
 echo "  dataset=${ANEMOI_DATA_ROOT}/era5-o48-2020-2021-6h-v1.zip"
 echo "  stage_root=${ANEMOI_STAGE_ROOT}"
@@ -103,7 +105,7 @@ if [[ '${ANEMOI_STAGE_GRAPH}' == '1' ]]; then
 fi
 cd '${ROOT_DIR}/configs'
 echo \"\$(date -Is) rank=\${SLURM_PROCID} starting anemoi-training\"
-exec '${ANEMOI_VENV}/bin/anemoi-training' train --config-name=training-multinode.yaml \
+exec '${ANEMOI_VENV}/bin/anemoi-training' train --config-name=${ANEMOI_CONFIG_NAME} \
   hardware.num_nodes=${ANEMOI_NODES} \
   hardware.num_gpus_per_node=${ANEMOI_GPUS_PER_NODE} \
   hardware.num_gpus_per_model=1 \

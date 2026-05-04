@@ -19,6 +19,7 @@ anemoi-demo/
     training-minimal.yaml
     training-multigpu.yaml
     training-multinode.yaml
+    training-fullnode.yaml
   env/
     lumi-env.sh
     requirements.txt
@@ -31,6 +32,7 @@ anemoi-demo/
     train_multinode.sh
   scripts/
     install_venv.sh
+    run_fullnode_production.sh
 ```
 
 ## Step 1: Clone The Repository
@@ -181,3 +183,36 @@ sbatch jobs/train_multinode.sh
 This is the full 2-node data-parallel training run: 2 nodes, 2 GPUs per node, and `num_gpus_per_model=1`.
 
 Run this only after `jobs/validate_multinode.sh` works.
+
+## Full-Node Workflow
+
+Full-node runs are a separate workflow from the minimal and partial-node paths.
+They use:
+
+- `configs/training-fullnode.yaml`
+- per-node staging into `/tmp/anemoi-demo`
+- reduced validation overhead before real training starts
+
+This path is intended for occupancy and production-style tests, not for the
+minimal bring-up.
+
+Example interactive 8 full-node run:
+
+```bash
+cd /scratch/project_462000131/anisrahm/anemoi-demo
+source env/lumi-env.sh
+bash scripts/alloc_fullnode_8.sh
+bash scripts/run_fullnode_production.sh
+```
+
+Defaults for the dedicated full-node config:
+
+- `hardware.num_nodes = 8`
+- `hardware.num_gpus_per_node = 8`
+- `dataloader.batch_size.training = 8`
+- `dataloader.limit_batches.training = 500`
+- `dataloader.limit_batches.validation = 1`
+- `training.max_epochs = 1`
+
+Override `ANEMOI_NODES`, `ANEMOI_GPUS_PER_NODE`, `ANEMOI_BATCH_SIZE`,
+`ANEMOI_TRAIN_LIMIT`, and `ANEMOI_VAL_LIMIT` in the shell when needed.
