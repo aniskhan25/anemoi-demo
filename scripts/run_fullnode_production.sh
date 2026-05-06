@@ -12,5 +12,6 @@ export ANEMOI_VAL_LIMIT="${ANEMOI_VAL_LIMIT:-1}"
 export ANEMOI_MAX_EPOCHS="${ANEMOI_MAX_EPOCHS:-1}"
 export ANEMOI_STAGE_DATA="${ANEMOI_STAGE_DATA:-1}"
 export ANEMOI_STAGE_GRAPH="${ANEMOI_STAGE_GRAPH:-1}"
+export ANEMOI_OUTPUT_ROOT="${ANEMOI_OUTPUT_ROOT:-${ROOT_DIR}/logs/output/${SLURM_JOB_ID:-interactive}}"
 
-exec "${ROOT_DIR}/scripts/run_fullnode_interactive.sh"
+exec bash "${ROOT_DIR}/scripts/run_fullnode_interactive.sh"
