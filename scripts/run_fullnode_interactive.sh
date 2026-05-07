@@ -17,6 +17,8 @@ ANEMOI_VAL_LIMIT="${ANEMOI_VAL_LIMIT:-10}"
 ANEMOI_MAX_EPOCHS="${ANEMOI_MAX_EPOCHS:-1}"
 ANEMOI_CONFIG_NAME="${ANEMOI_CONFIG_NAME:-training-multinode.yaml}"
 ANEMOI_DISTRIBUTED_STRATEGY="${ANEMOI_DISTRIBUTED_STRATEGY:-ddp}"
+ANEMOI_GPUS_PER_MODEL="${ANEMOI_GPUS_PER_MODEL:-1}"
+ANEMOI_READ_GROUP_SIZE="${ANEMOI_READ_GROUP_SIZE:-1}"
 ANEMOI_STAGE_ROOT="${ANEMOI_STAGE_ROOT:-/tmp/anemoi-demo}"
 ANEMOI_STAGE_DATA="${ANEMOI_STAGE_DATA:-1}"
 ANEMOI_STAGE_GRAPH="${ANEMOI_STAGE_GRAPH:-1}"
@@ -40,16 +42,23 @@ mkdir -p "${ANEMOI_OUTPUT_ROOT}"
 case "${ANEMOI_DISTRIBUTED_STRATEGY}" in
   ddp)
     ;;
+  anemoi-sharded)
+    ;;
   fsdp)
     echo "Distributed strategy '${ANEMOI_DISTRIBUTED_STRATEGY}' is reserved for the future sharded full-node path." >&2
     echo "The current repo only supports plain DDP launches. Wire the trainer/backend to FSDP before using this mode." >&2
     exit 1
     ;;
   *)
-    echo "Unsupported distributed strategy '${ANEMOI_DISTRIBUTED_STRATEGY}'. Supported values: ddp, fsdp." >&2
+    echo "Unsupported distributed strategy '${ANEMOI_DISTRIBUTED_STRATEGY}'. Supported values: ddp, anemoi-sharded, fsdp." >&2
     exit 1
     ;;
 esac
+
+SHARDING_OVERRIDES=""
+if [[ "${ANEMOI_DISTRIBUTED_STRATEGY}" == "anemoi-sharded" ]]; then
+  SHARDING_OVERRIDES=" dataloader.read_group_size=${ANEMOI_READ_GROUP_SIZE}"
+fi
 
 CPU_BIND="mask_cpu:7e000000000000,7e00000000000000"
 CPU_BIND="${CPU_BIND},7e0000,7e000000"
@@ -66,6 +75,8 @@ echo "  val_limit=${ANEMOI_VAL_LIMIT}"
 echo "  max_epochs=${ANEMOI_MAX_EPOCHS}"
 echo "  config_name=${ANEMOI_CONFIG_NAME}"
 echo "  distributed_strategy=${ANEMOI_DISTRIBUTED_STRATEGY}"
+echo "  gpus_per_model=${ANEMOI_GPUS_PER_MODEL}"
+echo "  read_group_size=${ANEMOI_READ_GROUP_SIZE}"
 echo "  graph=${ANEMOI_GRAPH_ROOT}/first_graph_o48.pt"
 echo "  dataset=${ANEMOI_DATA_ROOT}/era5-o48-2020-2021-6h-v1.zip"
 echo "  stage_root=${ANEMOI_STAGE_ROOT}"
@@ -144,10 +155,10 @@ echo \"\$(date -Is) rank=\${SLURM_PROCID} starting anemoi-training\"
 exec '${ANEMOI_VENV}/bin/anemoi-training' train --config-name=${ANEMOI_CONFIG_NAME} \
   hardware.num_nodes=${ANEMOI_NODES} \
   hardware.num_gpus_per_node=${ANEMOI_GPUS_PER_NODE} \
-  hardware.num_gpus_per_model=1 \
+  hardware.num_gpus_per_model=${ANEMOI_GPUS_PER_MODEL} \
   training.max_epochs=${ANEMOI_MAX_EPOCHS} \
   dataloader.limit_batches.training=${ANEMOI_TRAIN_LIMIT} \
   dataloader.limit_batches.validation=${ANEMOI_VAL_LIMIT} \
   dataloader.batch_size.training=${ANEMOI_BATCH_SIZE} \
-  dataloader.batch_size.validation=${ANEMOI_BATCH_SIZE}
+  dataloader.batch_size.validation=${ANEMOI_BATCH_SIZE}${SHARDING_OVERRIDES}
 "

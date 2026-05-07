@@ -1,0 +1,54 @@
+defaults:
+  - data: zarr
+  - dataloader: native_grid
+  - diagnostics: evaluation
+  - hardware: example
+  - graph: multi_scale
+  - model: gnn
+  - training: default
+  - _self_
+
+# Experimental Anemoi model-sharded full-node profile.
+# This uses Anemoi's documented sharding surface via num_gpus_per_model rather
+# than PyTorch FSDP. Start with 2 GPUs per model and a matching reader group.
+
+config_validation: true
+
+data:
+  resolution: o48
+
+hardware:
+  num_gpus_per_node: 8
+  num_nodes: 8
+  num_gpus_per_model: 2
+  paths:
+    data: ${oc.env:ANEMOI_DATA_ROOT}
+    graph: ${oc.env:ANEMOI_GRAPH_ROOT}
+    output: ${oc.env:ANEMOI_OUTPUT_ROOT}
+  files:
+    dataset: era5-o48-2020-2021-6h-v1.zip
+    graph: first_graph_o48.pt
+
+dataloader:
+  read_group_size: 2
+  num_workers:
+    training: 1
+    validation: 1
+    test: 1
+  batch_size:
+    training: 8
+    validation: 8
+    test: 8
+  limit_batches:
+    training: 500
+    validation: 1
+    test: 1
+
+training:
+  max_epochs: 1
+  lr:
+    rate: 1.0e-4
+
+diagnostics:
+  plot:
+    callbacks: []
