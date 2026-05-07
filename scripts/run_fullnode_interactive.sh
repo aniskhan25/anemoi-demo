@@ -58,6 +58,11 @@ esac
 SHARDING_OVERRIDES=""
 if [[ "${ANEMOI_DISTRIBUTED_STRATEGY}" == "anemoi-sharded" ]]; then
   SHARDING_OVERRIDES=" dataloader.read_group_size=${ANEMOI_READ_GROUP_SIZE}"
+  if [[ "${ANEMOI_BATCH_SIZE}" != "1" ]]; then
+    echo "Anemoi model sharding currently requires ANEMOI_BATCH_SIZE=1." >&2
+    echo "Set ANEMOI_BATCH_SIZE=1 when ANEMOI_DISTRIBUTED_STRATEGY=anemoi-sharded." >&2
+    exit 1
+  fi
 fi
 
 CPU_BIND="mask_cpu:7e000000000000,7e00000000000000"

@@ -221,6 +221,9 @@ This selects the experimental Anemoi model-sharded path with:
 - `ANEMOI_DISTRIBUTED_STRATEGY=anemoi-sharded`
 - `ANEMOI_GPUS_PER_MODEL=2`
 - `ANEMOI_READ_GROUP_SIZE=2`
+- `ANEMOI_BATCH_SIZE=1`
+
+The current Anemoi model-sharded path only supports batch size `1` per rank.
 
 Defaults for the dedicated full-node config:
 
