@@ -190,6 +190,7 @@ Full-node runs are a separate workflow from the minimal and partial-node paths.
 They use:
 
 - `configs/training-fullnode.yaml`
+- `configs/training-fullnode-fsdp.yaml` (reserved for the future sharded path)
 - per-node staging into `/tmp/anemoi-demo`
 - reduced validation overhead before real training starts
 
@@ -205,6 +206,18 @@ bash scripts/alloc_fullnode_8.sh
 bash scripts/run_fullnode_production.sh
 ```
 
+Reserved sharded 8 full-node wrapper:
+
+```bash
+cd /scratch/project_462000131/anisrahm/anemoi-demo
+source env/lumi-env.sh
+bash scripts/alloc_fullnode_8.sh
+bash scripts/run_fullnode_sharded_8.sh
+```
+
+This currently selects the reserved FSDP profile and will fail fast until the
+trainer/backend is actually wired for sharded training.
+
 Defaults for the dedicated full-node config:
 
 - `hardware.num_nodes = 8`
@@ -216,3 +229,13 @@ Defaults for the dedicated full-node config:
 
 Override `ANEMOI_NODES`, `ANEMOI_GPUS_PER_NODE`, `ANEMOI_BATCH_SIZE`,
 `ANEMOI_TRAIN_LIMIT`, and `ANEMOI_VAL_LIMIT` in the shell when needed.
+
+The full-node launcher also exposes `ANEMOI_DISTRIBUTED_STRATEGY`.
+
+- `ddp` is the only supported mode today and uses `training-fullnode.yaml`
+- `fsdp` is reserved for the future sharded implementation and maps to
+  `training-fullnode-fsdp.yaml`
+
+This separation is deliberate. The current `16 x 8` scaling boundary is the
+plain DDP full-model broadcast at startup, so the architectural fix is a
+sharded backend rather than more launcher tuning.
