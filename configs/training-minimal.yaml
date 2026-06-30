@@ -44,8 +44,8 @@ dataloader:
 
 training:
   max_epochs: 4
-  lr:
-    rate: 1.0e-4
+  optimization:
+    lr: 1.0e-4
 
 diagnostics:
   plot:
