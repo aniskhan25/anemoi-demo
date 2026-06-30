@@ -50,3 +50,8 @@ training:
 diagnostics:
   plot:
     callbacks: []
+  log:
+    # mlflow is disabled for this minimal run; clear the mandatory ??? so schema
+    # validation does not trip on diagnostics.log.mlflow.tracking_uri
+    mlflow:
+      tracking_uri: null
