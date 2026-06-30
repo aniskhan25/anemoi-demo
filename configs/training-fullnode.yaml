@@ -5,7 +5,7 @@ defaults:
   - hardware: example
   - graph: multi_scale
   - model: gnn
-  - training: default
+  - training: single
   - _self_
 
 # Dedicated full-node workflow config. This is separate from the minimal and

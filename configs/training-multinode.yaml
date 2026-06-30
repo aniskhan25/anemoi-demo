@@ -5,7 +5,7 @@ defaults:
   - hardware: example
   - graph: multi_scale
   - model: gnn
-  - training: default
+  - training: single
   - _self_
 
 # Two-node, 2-GPU-per-node data-parallel config for the pinned release set.

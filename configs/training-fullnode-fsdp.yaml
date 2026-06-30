@@ -5,7 +5,7 @@ defaults:
   - hardware: example
   - graph: multi_scale
   - model: gnn
-  - training: default
+  - training: single
   - _self_
 
 # Reserved profile for the future sharded full-node path.
