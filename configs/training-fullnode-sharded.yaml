@@ -2,9 +2,10 @@ defaults:
   - data: zarr
   - dataloader: native_grid
   - diagnostics: evaluation
-  - hardware: example
+  - system: example
   - graph: multi_scale
   - model: gnn
+  - task: forecaster
   - training: single
   - _self_
 
@@ -17,17 +18,16 @@ config_validation: true
 data:
   resolution: o48
 
-hardware:
-  num_gpus_per_node: 8
-  num_nodes: 8
-  num_gpus_per_model: 2
-  paths:
-    data: ${oc.env:ANEMOI_DATA_ROOT}
-    graph: ${oc.env:ANEMOI_GRAPH_ROOT}
-    output: ${oc.env:ANEMOI_OUTPUT_ROOT}
-  files:
-    dataset: era5-o48-2020-2021-6h-v1.zip
-    graph: first_graph_o48.pt
+system:
+  hardware:
+    num_gpus_per_node: 8
+    num_nodes: 8
+    num_gpus_per_model: 2
+  input:
+    dataset: ${oc.env:ANEMOI_DATA_ROOT}/era5-o48-2020-2021-6h-v1.zip
+    graph: ${oc.env:ANEMOI_GRAPH_ROOT}/first_graph_o48.pt
+  output:
+    root: ${oc.env:ANEMOI_OUTPUT_ROOT}
 
 dataloader:
   read_group_size: 2
@@ -46,9 +46,12 @@ dataloader:
 
 training:
   max_epochs: 1
-  lr:
-    rate: 1.0e-4
+  optimization:
+    lr: 1.0e-4
 
 diagnostics:
   plot:
     callbacks: []
+  log:
+    mlflow:
+      tracking_uri: null
