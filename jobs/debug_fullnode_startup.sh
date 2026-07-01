@@ -6,7 +6,7 @@
 #SBATCH --ntasks-per-node=8
 #SBATCH --gpus-per-node=8
 #SBATCH --cpus-per-task=7
-#SBATCH --time=01:00:00
+#SBATCH --time=00:20:00
 #SBATCH --output=logs/slurm-fullnode-startup-%j.out
 
 set -euo pipefail

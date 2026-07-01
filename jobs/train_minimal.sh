@@ -5,7 +5,7 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --gpus=1
-#SBATCH --time=00:30:00
+#SBATCH --time=00:15:00
 #SBATCH --output=logs/slurm-%j.out
 
 set -euo pipefail

@@ -7,7 +7,7 @@
 #SBATCH --gpus-per-node=2
 #SBATCH --cpus-per-task=7
 #SBATCH --mem-per-gpu=60G
-#SBATCH --time=00:20:00
+#SBATCH --time=00:10:00
 #SBATCH --output=logs/slurm-validate-2gpu-%j.out
 
 set -euo pipefail
