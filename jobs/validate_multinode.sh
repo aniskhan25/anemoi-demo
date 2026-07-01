@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=anemoi-validate-2node
 #SBATCH --account=project_462000131
-#SBATCH --partition=small-g
+#SBATCH --partition=dev-g
 #SBATCH --nodes=2
 #SBATCH --ntasks-per-node=2
 #SBATCH --gpus-per-node=2
