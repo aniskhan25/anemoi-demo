@@ -1,251 +1,83 @@
-# Anemoi Minimal Example On LUMI-G
+# Anemoi Minimal Example on LUMI-G
 
-This repository is a minimal, practical example of how to run one Anemoi training job on LUMI-G with the smallest workable setup.
+A minimal, practical example of running Anemoi training on LUMI-G using the
+prebuilt Anemoi container. The full Anemoi stack is baked into the container, so
+there is no per-run virtual environment to create.
 
-## What You Need
+## Prerequisites
 
-- access to LUMI-G
-- a working project account
-- the container path from `env/lumi-env.sh`
-- one valid dataset
-- a writable graph output location
+- Access to LUMI-G and a project account
+- The Anemoi container built at `${CONTAINER}` (see
+  [Extending-containers-on-LUMI](https://github.com/aniskhan25/Extending-containers-on-LUMI),
+  branch `feature/anemoi-lumi`). It bakes in the pinned release set:
+  - `anemoi-training==0.14.0`, `anemoi-models==0.16.0`, `anemoi-graphs==0.9.4`
+  - on PyTorch 2.10 + ROCm 7.0, venv at `/opt/anemoi-venv`
 
-## Repository Layout
-
-```text
-anemoi-demo/
-  README.md
-  configs/
-    training-minimal.yaml
-    training-multigpu.yaml
-    training-multinode.yaml
-    training-fullnode.yaml
-  env/
-    lumi-env.sh
-    requirements.txt
-  jobs/
-    validate_minimal.sh
-    validate_multigpu.sh
-    validate_multinode.sh
-    train_minimal.sh
-    train_multigpu.sh
-    train_multinode.sh
-  scripts/
-    install_venv.sh
-    run_fullnode_production.sh
-```
-
-## Step 1: Clone The Repository
+## Setup
 
 ```bash
 git clone https://github.com/aniskhan25/anemoi-demo
 cd anemoi-demo
-```
-
-## Step 2: Load The Environment
-
-```bash
 source env/lumi-env.sh
 ```
 
-This defines:
+`env/lumi-env.sh` defines everything the jobs need, defaulting to the baked-in
+container so no manual exports are required:
 
-- `CONTAINER`
-- `ANEMOI_DATA_ROOT`
-- `ANEMOI_GRAPH_ROOT`
-- `ANEMOI_OUTPUT_ROOT`
-- `ANEMOI_VENV` (defaults to `/scratch/${PROJECT_ACCOUNT}/${LUMI_USER}/anemoi-demo/.venv`)
+- `CONTAINER` → `/scratch/${PROJECT_ACCOUNT}/${LUMI_USER}/anemoi-lumi.sif`
+- `ANEMOI_VENV` → `/opt/anemoi-venv`
+- `ANEMOI_DATA_ROOT`, `ANEMOI_GRAPH_ROOT`, `ANEMOI_OUTPUT_ROOT`
 
-## Step 3: Create The Python Environment
+Override any of them by exporting before `source` if your paths differ.
 
-Use a short interactive GPU allocation on `dev-g`, then run:
-
-```bash
-salloc --account=project_462000131 --partition=dev-g \
-  --nodes=1 --gpus-per-node=1 --ntasks=1 --cpus-per-task=7 \
-  --mem-per-gpu=60G --time=00:15:00
-```
-
-Inside that allocation:
+## Fetch the sample dataset
 
 ```bash
-# from the repo root
-rm -rf "${ANEMOI_VENV}"
-./scripts/install_venv.sh
-```
-
-The requirements pin a matched Anemoi release set:
-
-- `anemoi-training==0.7.0`
-- `anemoi-models==0.10.0`
-- `anemoi-graphs==0.7.2`
-- `zarr<3`
-- `trimesh`
-- `pyshtools`
-
-If `env/requirements.txt` changes, remove `${ANEMOI_VENV}` and recreate it instead of upgrading the existing environment in place. The install script only creates the venv and installs those requirements; the validation job is the runtime check. The scripts use the same container module pattern as the LUMI AI Guide: `module purge`, `module use /appl/local/laifs/modules`, and `module load lumi-aif-singularity-bindings`.
-
-## Step 4: Fetch The Sample Dataset
-
-```bash
-source env/lumi-env.sh
 mkdir -p "${ANEMOI_DATA_ROOT}" "${ANEMOI_GRAPH_ROOT}"
-curl -L https://data.ecmwf.int/anemoi-datasets/era5-o48-2020-2021-6h-v1.zip   -o "${ANEMOI_DATA_ROOT}/era5-o48-2020-2021-6h-v1.zip"
+curl -L https://data.ecmwf.int/anemoi-datasets/era5-o48-2020-2021-6h-v1.zip \
+  -o "${ANEMOI_DATA_ROOT}/era5-o48-2020-2021-6h-v1.zip"
 ```
 
-## Step 5: Minimal Config
+The graph is created at runtime from the config on the first run.
 
-`configs/training-minimal.yaml` is already wired for the sample dataset and a runtime-generated graph:
+## Run
 
-- `data.resolution = o48`
-- `hardware.files.dataset = era5-o48-2020-2021-6h-v1.zip`
-- `hardware.files.graph = first_graph_o48.pt`
-- `hardware.paths.data = ${ANEMOI_DATA_ROOT}`
-- `hardware.paths.graph = ${ANEMOI_GRAPH_ROOT}`
-- `hardware.paths.output = ${ANEMOI_OUTPUT_ROOT}`
-- `training.max_epochs = 4`
-- `training.lr.rate = 1.0e-4`
-- `diagnostics.plot.callbacks = []`
-
-## Step 6: Submit The Validation Job
+Each step is a short smoke test; run them in order. All validation jobs target
+`dev-g`.
 
 ```bash
-sbatch jobs/validate_minimal.sh
+sbatch jobs/validate_minimal.sh    # 1 GPU  — smallest smoke test
+sbatch jobs/validate_multigpu.sh   # 2 GPU  — data-parallel (DDP)
+sbatch jobs/validate_multinode.sh  # 2 nodes — multi-node startup
 ```
 
-This runs a tiny training job with very small batch limits so it acts as a smoke test.
-It is intended for `dev-g`.
-
-What success looks like:
-
-- the container starts
-- the Anemoi CLI is found
-- dataset loading starts
-- graph and model initialization start
-- the run finishes within the short validation wall time
-- checkpoints are written under `${ANEMOI_OUTPUT_ROOT}`
-
-## Step 7: Submit The Full Minimal Job
+Once a validation passes, submit its full counterpart:
 
 ```bash
 sbatch jobs/train_minimal.sh
-```
-
-This keeps `small-g` so the full single-GPU baseline run has more margin than
-the validation smoke test.
-
-## Step 8: Validate The 2-GPU Path
-
-```bash
-sbatch jobs/validate_multigpu.sh
-```
-
-This is the shortest distributed smoke test. It uses the same 2-GPU launch path as the full distributed job, but limits training and validation to 1 batch each. Run this before the full 2-GPU job.
-
-## Step 9: Submit The 2-GPU Job
-
-```bash
 sbatch jobs/train_multigpu.sh
-```
-
-This is the first distributed step: 1 node, 2 GPUs, and `num_gpus_per_model=1`, so Anemoi uses plain data parallelism. The effective batch size doubles relative to the single-GPU config because the per-rank batch size stays at 1.
-
-The matching config is `configs/training-multigpu.yaml`:
-
-- `hardware.num_nodes = 1`
-- `hardware.num_gpus_per_node = 2`
-- `hardware.num_gpus_per_model = 1`
-
-The job scripts use `srun` so Slurm launches one training process per GPU. This is the pattern to keep when extending the repo later to multi-node runs.
-
-## Step 10: Validate The 2-Node Path
-
-```bash
-sbatch jobs/validate_multinode.sh
-```
-
-This is the first multi-node smoke test: 2 nodes, 2 GPUs per node, and `num_gpus_per_model=1`. It keeps the same data-parallel setup as the 2-GPU job, but now checks that Slurm and Anemoi start correctly across nodes before you attempt a longer multi-node run.
-
-The matching config is `configs/training-multinode.yaml`:
-
-- `hardware.num_nodes = 2`
-- `hardware.num_gpus_per_node = 2`
-- `hardware.num_gpus_per_model = 1`
-
-Run this only after `jobs/validate_multigpu.sh` works.
-
-## Step 11: Submit The 2-Node Job
-
-```bash
 sbatch jobs/train_multinode.sh
 ```
 
-This is the full 2-node data-parallel training run: 2 nodes, 2 GPUs per node, and `num_gpus_per_model=1`.
+Success looks like: the container starts, the dataset loads, the graph and model
+initialize, the run reaches `Trainer.fit stopped: max_epochs reached`, and
+checkpoints appear under `${ANEMOI_OUTPUT_ROOT}`.
 
-Run this only after `jobs/validate_multinode.sh` works.
+## Configs
 
-## Full-Node Workflow
+The configs in `configs/` target the anemoi-training **0.14.0** schema:
 
-Full-node runs are a separate workflow from the minimal and partial-node paths.
-They use:
+- `system.hardware.{num_gpus_per_node,num_nodes,num_gpus_per_model}` — placement
+- `system.input.{dataset,graph}` — full paths to the dataset and graph
+- `system.output.root` — output directory
+- `training.optimization.lr` — learning rate
+- `task: forecaster` — the training task
 
-- `configs/training-fullnode.yaml`
-- `configs/training-fullnode-sharded.yaml` (experimental Anemoi model sharding)
-- `configs/training-fullnode-fsdp.yaml` (reserved for the future sharded path)
-- per-node staging into `/tmp/anemoi-demo`
-- reduced validation overhead before real training starts
+`training-minimal.yaml` is wired for the sample ERA5 dataset out of the box.
 
-This path is intended for occupancy and production-style tests, not for the
-minimal bring-up.
+## Full-node workflow
 
-Example interactive 8 full-node run:
-
-```bash
-cd /scratch/project_462000131/anisrahm/anemoi-demo
-source env/lumi-env.sh
-bash scripts/alloc_fullnode_8.sh
-bash scripts/run_fullnode_production.sh
-```
-
-Reserved sharded 8 full-node wrapper:
-
-```bash
-cd /scratch/project_462000131/anisrahm/anemoi-demo
-source env/lumi-env.sh
-bash scripts/alloc_fullnode_8.sh
-bash scripts/run_fullnode_sharded_8.sh
-```
-
-This selects the experimental Anemoi model-sharded path with:
-
-- `ANEMOI_DISTRIBUTED_STRATEGY=anemoi-sharded`
-- `ANEMOI_GPUS_PER_MODEL=2`
-- `ANEMOI_READ_GROUP_SIZE=2`
-- `ANEMOI_BATCH_SIZE=1`
-
-The current Anemoi model-sharded path only supports batch size `1` per rank.
-
-Defaults for the dedicated full-node config:
-
-- `hardware.num_nodes = 8`
-- `hardware.num_gpus_per_node = 8`
-- `dataloader.batch_size.training = 8`
-- `dataloader.limit_batches.training = 500`
-- `dataloader.limit_batches.validation = 1`
-- `training.max_epochs = 1`
-
-Override `ANEMOI_NODES`, `ANEMOI_GPUS_PER_NODE`, `ANEMOI_BATCH_SIZE`,
-`ANEMOI_TRAIN_LIMIT`, and `ANEMOI_VAL_LIMIT` in the shell when needed.
-
-The full-node launcher also exposes `ANEMOI_DISTRIBUTED_STRATEGY`.
-
-- `ddp` is the only supported mode today and uses `training-fullnode.yaml`
-- `anemoi-sharded` is the experimental Anemoi model-sharding path and uses
-  `training-fullnode-sharded.yaml`
-- `fsdp` is reserved for the future sharded implementation and maps to
-  `training-fullnode-fsdp.yaml`
-
-This separation is deliberate. The current `16 x 8` scaling boundary is the
-plain DDP full-model broadcast at startup, so the architectural fix is either
-Anemoi model sharding or a future sharded backend rather than more launcher
-tuning.
+Full-node runs (8+ nodes) are a separate workflow using
+`configs/training-fullnode*.yaml` and `standard-g` (beyond `dev-g`'s 2-node
+limit). See `notes/fullnode-startup-debug.md` for the bring-up procedure and
+`ROADMAP.md` for status.
