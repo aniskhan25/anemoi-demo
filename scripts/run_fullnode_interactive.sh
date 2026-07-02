@@ -158,9 +158,9 @@ fi
 cd '${ROOT_DIR}/configs'
 echo \"\$(date -Is) rank=\${SLURM_PROCID} starting anemoi-training\"
 exec '${ANEMOI_VENV}/bin/anemoi-training' train --config-name=${ANEMOI_CONFIG_NAME} \
-  hardware.num_nodes=${ANEMOI_NODES} \
-  hardware.num_gpus_per_node=${ANEMOI_GPUS_PER_NODE} \
-  hardware.num_gpus_per_model=${ANEMOI_GPUS_PER_MODEL} \
+  system.hardware.num_nodes=${ANEMOI_NODES} \
+  system.hardware.num_gpus_per_node=${ANEMOI_GPUS_PER_NODE} \
+  system.hardware.num_gpus_per_model=${ANEMOI_GPUS_PER_MODEL} \
   training.max_epochs=${ANEMOI_MAX_EPOCHS} \
   dataloader.limit_batches.training=${ANEMOI_TRAIN_LIMIT} \
   dataloader.limit_batches.validation=${ANEMOI_VAL_LIMIT} \
